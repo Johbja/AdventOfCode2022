@@ -4,7 +4,7 @@ namespace Advent_Of_Code_2022.Days
 {
     public class Day1 : BaseDay
     {
-        private IEnumerable<Wrapper>? parsedInput;
+        private Wrapper wrapper;
 
         public Day1(string path, Type currentDay) : base(path, currentDay) {}
 
@@ -12,17 +12,15 @@ namespace Advent_Of_Code_2022.Days
         {
             RunProtectedAction(() =>
             {
-                if (string.IsNullOrEmpty(input))
+                if (input is null)
                     throw new Exception("input from file is null");
 
-                parsedInput = input.Split("\r\n\r\n", StringSplitOptions.RemoveEmptyEntries)
-                  .Select(x => x.Split("\r\n", StringSplitOptions.RemoveEmptyEntries)
-                                .Select(x => int.Parse(x)))
-                  .Select((x, i) => new Wrapper { Index = i, Calories = x.Sum() });
+                wrapper = input.Select(s => s.Length > 0 ? int.Parse(s) : 0)
+                               .Aggregate(new Wrapper(), (wrapper, value) => value == 0 ? wrapper.AddNew() : wrapper.ModifyLast(value));
 
-                var result = parsedInput.Aggregate((a, b) => a.Calories <= b.Calories ? b : a);
+                var result = wrapper.data.Max(n => n.calories);
 
-                PrintAnswerPartOne($"Elf carring max calories is Elf number {result.Index}, he is carrying {result.Calories} calories");
+                PrintAnswerPartOne($"Elf carring max calories is carrying {result} calories");
             });
         }
 
@@ -30,10 +28,12 @@ namespace Advent_Of_Code_2022.Days
         {
             RunProtectedAction(() =>
             {
-                if (parsedInput is null)
-                    throw new Exception($"{nameof(parsedInput)} is null, answer from first question was not executed correctly");
+                if (wrapper is null)
+                    throw new Exception($"{nameof(wrapper)} is null, answer from first question was not executed correctly");
 
-                var result = parsedInput.OrderByDescending(x => x.Calories).Take(3).Sum(x => x.Calories);
+                var result = wrapper.data.OrderByDescending(x => x.calories)
+                                         .Take(3)
+                                         .Sum(x => x.calories);
 
                 PrintAnswerPartTwo($"Sum of top 3 total calories is {result}");
             });

@@ -8,13 +8,12 @@ namespace Advent_Of_Code_2022.Days
 {
     public class BaseDay
     {
-        protected string input;
+        protected List<string> input;
         protected string path;
 
         public BaseDay(string path, Type instanceType) 
         {
             this.path = path;
-            input = "";
             ReadInput(instanceType.Name, path);
         }
 
@@ -54,11 +53,11 @@ namespace Advent_Of_Code_2022.Days
 
         protected void ReadInput(string filename, string path = "")
         {
-            string fullpath = $"{AppContext.BaseDirectory}Inputs\\{filename}.txt";
-            if (!string.IsNullOrEmpty(path))
-                fullpath = path;
+            string fullpath = path;
+            if (string.IsNullOrEmpty(path))
+                fullpath = Path.Combine(AppContext.BaseDirectory, $"Inputs\\{filename}.txt"); 
 
-            input = File.ReadAllText(fullpath);
+            input = File.ReadAllLines(fullpath).ToList();
         }
     }
 }

@@ -29,9 +29,6 @@ Parser.Default.ParseArguments<CommandLineOptions>(args).WithParsed(o =>
             case 2:
                 currentDay.CaculateAnswerPartTwo();
                 break;
-            case 3:
-                currentDay.CalculateAllAnswers();
-                break;
             default:
                 currentDay.CalculateAllAnswers();
                 break;
@@ -39,7 +36,7 @@ Parser.Default.ParseArguments<CommandLineOptions>(args).WithParsed(o =>
     }
     else
     {
-        Console.WriteLine("you need to select a day to run with \'d\'");
+        Console.WriteLine("You need to select a day to run with \'-d\'");
         return;
     }
 });

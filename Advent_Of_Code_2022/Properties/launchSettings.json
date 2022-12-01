@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Advent_Of_Code_2022": {
+      "commandName": "Project",
+      "commandLineArgs": "-d 2"
+    }
+  }
+}

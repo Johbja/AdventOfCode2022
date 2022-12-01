@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace Advent_Of_Code_2022.Days
 {
-    public class BaseDay
+    public class Solution
     {
         protected List<string> input;
         protected string path;
 
-        public BaseDay(string path, Type instanceType) 
+        public Solution(string path, Type instanceType) 
         {
             this.path = path;
             ReadInput(instanceType.Name, path);

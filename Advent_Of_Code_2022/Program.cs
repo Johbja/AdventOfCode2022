@@ -8,12 +8,12 @@ Parser.Default.ParseArguments<CommandLineOptions>(args).WithParsed(o =>
 {
     var day = Assembly.GetExecutingAssembly()
                       .GetTypes()
-                      .Where(t => t.IsSubclassOf(typeof(BaseDay)))
+                      .Where(t => t.IsSubclassOf(typeof(Solution)))
                       .FirstOrDefault(x => x.Name.EndsWith(o.Day.ToString()));
     
     if(day is not null)
     {
-        var currentDay = (BaseDay?)Activator.CreateInstance(day, new object[] { o.Path, day });
+        var currentDay = (Solution?)Activator.CreateInstance(day, new object[] { o.Path, day });
 
         if(currentDay is null)
         {

@@ -2,7 +2,7 @@
 
 namespace Advent_Of_Code_2022.Days
 {
-    public class Day1 : BaseDay
+    public class Day1 : Solution
     {
         private Wrapper wrapper;
 

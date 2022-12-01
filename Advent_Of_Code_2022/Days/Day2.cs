@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Advent_Of_Code_2022.Days
 {
-    public class Day2 : BaseDay
+    public class Day2 : Solution
     {
         public Day2(string path, Type instanceType) : base(path, instanceType) {}
 

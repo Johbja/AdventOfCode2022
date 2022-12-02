@@ -14,7 +14,10 @@ namespace Advent_Of_Code_2022.Days
         {
             RunProtectedAction(() =>
             {
-                var result = input.Select(s => CalculateOutcomeScore(s)).Sum();
+                char t = 'B';
+                var n = (int)t;
+
+                var result = input.Select(s => CalculateOutcome(s)).Sum();
 
                 PrintAnswerPartOne($"The score following the guide will be {result}");
             });
@@ -24,7 +27,7 @@ namespace Advent_Of_Code_2022.Days
         {
             RunProtectedAction(() =>
             {
-                var result = input.Select(s => CalculateWithNeededMove(s)).Sum();
+                var result = input.Select(s => CalculateOutcomeWithNeededMove(s)).Sum();
 
                 PrintAnswerPartTwo($"The score following the guide will be {result}");
             });
@@ -43,17 +46,17 @@ namespace Advent_Of_Code_2022.Days
         //Y Paper
         //Z Sissors
 
-        private int CalculateOutcomeScore(string moves)
+        private int CalculateOutcome(string moves)
             => moves switch
             {
-                "A X" => 3 + 1,
-                "A Y" => 6 + 2,
-                "A Z" => 0 + 3,
-                "B X" => 0 + 1,
-                "B Y" => 3 + 2,
-                "B Z" => 6 + 3,
-                "C X" => 6 + 1,
-                "C Y" => 0 + 2,
+                "A X" => 1 + 3,
+                "A Y" => 2 + 6,
+                "A Z" => 3 + 0,
+                "B X" => 1 + 0,
+                "B Y" => 2 + 3,
+                "B Z" => 3 + 6,
+                "C X" => 1 + 6,
+                "C Y" => 2 + 0,
                 "C Z" => 3 + 3,
                 _ => 0,
             };
@@ -63,18 +66,18 @@ namespace Advent_Of_Code_2022.Days
         //Y draw
         //Z win
 
-        private int CalculateWithNeededMove(string moves) 
+        private int CalculateOutcomeWithNeededMove(string moves) 
             => moves switch
             {
-                "A X" => 0 + 3,
-                "A Y" => 3 + 1,
-                "A Z" => 6 + 2,
-                "B X" => 0 + 1,
-                "B Y" => 3 + 2,
-                "B Z" => 6 + 3,
-                "C X" => 0 + 2,
+                "A X" => 3 + 0,
+                "A Y" => 1 + 3,
+                "A Z" => 2 + 6,
+                "B X" => 1 + 0,
+                "B Y" => 2 + 3,
+                "B Z" => 3 + 6,
+                "C X" => 2 + 0,
                 "C Y" => 3 + 3,
-                "C Z" => 6 + 1,
+                "C Z" => 1 + 6,
                 _ => 0,
             };
 

@@ -20,11 +20,10 @@ namespace Advent_Of_Code_2022.Days
                 int[] bucket = new int[53];
                 input.Select(s => s.Select(c => (int)c).Chunk(s.Length / 2).ToArray())
                                    .Select(row => row[0].Intersect(row[1]))
-                                   .Where(row => row.Any())
+                                   .Where(items => items.Any())
+                                   .SelectMany(items => items)
                                    .ToList()
-                                   .ForEach(items => items.ToList()
-                                                          .ForEach(item => bucket[ToBucketIndex(item)] += 1)
-                                   );
+                                   .ForEach(item => bucket[ToBucketIndex(item)] += 1);
 
                 var result = bucket.Select((x, i) => x * i).Sum();
                 PrintAnswerPartOne($"the sum of the priority items are {result}");
@@ -38,13 +37,11 @@ namespace Advent_Of_Code_2022.Days
                 int[] bucket = new int[53];
                 input.Select(s => s.Select(c => (int)c))
                      .Chunk(3)
-                     .Select(group => group.OrderBy(x => x.Count()).ToArray())
                      .Select(group => group[0].Intersect(group[1].Intersect(group[2])))
                      .Where(x => x.Any())
+                     .SelectMany(x => x)
                      .ToList()
-                     .ForEach(items => items.ToList()
-                                            .ForEach(item => bucket[ToBucketIndex(item)] += 1)
-                     );
+                     .ForEach(item => bucket[ToBucketIndex(item)] += 1);
                
                 var result = bucket.Select((x, i) => x * i).Sum();
                 PrintAnswerPartTwo($"the sum of the priority items are {result}");

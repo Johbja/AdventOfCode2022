@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -39,16 +40,26 @@ namespace Advent_Of_Code_2022.Days
             Console.WriteLine(answer);
         }
 
+        
         protected void RunProtectedAction(Action action)
         {
             try
             {
-                action(); 
+                TimeAction(action);
             }
             catch(Exception ex)
             {
                 Console.WriteLine($"Error occured in {action.Method.Name}, {ex.Message}");
             }
+        }
+
+        private void TimeAction(Action action)
+        {
+            var timer = new Stopwatch();
+            timer.Start();
+            action();
+            timer.Stop();
+            Console.WriteLine($"Action exacuted in {timer.Elapsed.TotalSeconds} seconds");
         }
 
         protected void ReadInput(string filename, string path = "")

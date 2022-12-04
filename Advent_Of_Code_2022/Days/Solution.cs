@@ -53,7 +53,7 @@ namespace Advent_Of_Code_2022.Days
             }
         }
 
-        private void TimeAction(Action action)
+        protected void TimeAction(Action action)
         {
             var timer = new Stopwatch();
             timer.Start();

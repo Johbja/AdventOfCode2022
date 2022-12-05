@@ -18,14 +18,14 @@ namespace Advent_Of_Code_2022.Days
             ReadInput(instanceType.Name, path);
         }
 
-        public virtual void CaculateAnswerPartOne() {}
+        public virtual void SolvePartOne() {}
 
-        public virtual void CaculateAnswerPartTwo() {}
+        public virtual void SolvePartTwo() {}
 
-        public void CalculateAllAnswers()
+        public void SolveAllParts()
         {
-            CaculateAnswerPartOne();
-            CaculateAnswerPartTwo();
+            SolvePartOne();
+            SolvePartTwo();
         }
 
         protected void PrintAnswerPartOne(string answer)

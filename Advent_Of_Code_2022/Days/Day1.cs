@@ -8,7 +8,7 @@ namespace Advent_Of_Code_2022.Days
 
         public Day1(string path, Type currentDay) : base(path, currentDay) { }
 
-        public override void CaculateAnswerPartOne()
+        public override void SolvePartOne()
         {
             RunProtectedAction(() =>
             {
@@ -24,7 +24,7 @@ namespace Advent_Of_Code_2022.Days
             });
         }
 
-        public override void CaculateAnswerPartTwo()
+        public override void SolvePartTwo()
         {
             RunProtectedAction(() =>
             {

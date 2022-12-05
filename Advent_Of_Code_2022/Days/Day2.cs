@@ -25,7 +25,7 @@ namespace Advent_Of_Code_2022.Days
         private int ToIndex(char input, int offset) 
             => ((int)input + offset) % arrayLength;
 
-        public override void CaculateAnswerPartOne()
+        public override void SolvePartOne()
         {
             RunProtectedAction(() =>
             {
@@ -34,7 +34,7 @@ namespace Advent_Of_Code_2022.Days
             });
         }
 
-        public override void CaculateAnswerPartTwo()
+        public override void SolvePartTwo()
         {
             RunProtectedAction(() =>
             {

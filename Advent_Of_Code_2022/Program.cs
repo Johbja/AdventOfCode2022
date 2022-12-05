@@ -24,13 +24,13 @@ Parser.Default.ParseArguments<CommandLineOptions>(args).WithParsed(o =>
         switch (o.Answer)
         {
             case 1:
-                currentDay.CaculateAnswerPartOne();
+                currentDay.SolvePartOne();
                 break;
             case 2:
-                currentDay.CaculateAnswerPartTwo();
+                currentDay.SolvePartTwo();
                 break;
             default:
-                currentDay.CalculateAllAnswers();
+                currentDay.SolveAllParts();
                 break;
         }
     }

@@ -12,14 +12,15 @@ namespace Advent_Of_Code_2022.Renderer
 
     public class Frame
     {
-        private horizontalAlign horizontalAlign = horizontalAlign.center;
-        private verticalAlign verticalAlign = verticalAlign.center;
+        public char Filler { get; set; } = '.';
 
         private char[][] frame;
+        private horizontalAlign horizontalAlign;
+        private verticalAlign verticalAlign;
 
         public Frame(List<string> content = null, int width = 100, int heigth = 30, horizontalAlign horizontalAlign = horizontalAlign.center, verticalAlign verticalAlign = verticalAlign.center)
         {
-            frame = Enumerable.Range(0, heigth).Select(h => Enumerable.Range(0, width).Select(w => '.').ToArray()).ToArray();
+            frame = Enumerable.Range(0, heigth).Select(h => Enumerable.Range(0, width).Select(w => Filler).ToArray()).ToArray();
             this.horizontalAlign = horizontalAlign;
             this.verticalAlign = verticalAlign;
         }

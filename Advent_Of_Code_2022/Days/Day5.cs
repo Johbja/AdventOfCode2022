@@ -11,9 +11,9 @@ namespace Advent_Of_Code_2022.Days
 {
     public class Day5 : Solution
     {
-        private List<Instruction> instructions;
-        private List<string> crateArrangement;
-        private char[][][] transform;
+        private readonly List<Instruction> instructions;
+        private readonly List<string> crateArrangement;
+        private readonly char[][][] transform;
 
         public Day5(string path, Type instanceType) : base(path, instanceType)
         {

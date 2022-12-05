@@ -6,7 +6,7 @@ namespace Advent_Of_Code_2022.Days
     {
         private Wrapper wrapper;
 
-        public Day1(string path, Type currentDay) : base(path, currentDay) { }
+        public Day1(string path, Type currentDay, bool render) : base(path, currentDay, render) { }
 
         public override void SolvePartOne()
         {

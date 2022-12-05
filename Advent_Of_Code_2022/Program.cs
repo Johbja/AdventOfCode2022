@@ -1,8 +1,10 @@
 ﻿using Advent_Of_Code_2022.CommandLineOptions;
 using Advent_Of_Code_2022.Days;
+using Advent_Of_Code_2022.Renderer;
 using CommandLine;
 using System.Reflection;
 
+Task RendererLoop = null;
 
 Parser.Default.ParseArguments<CommandLineOptions>(args).WithParsed(o =>
 {
@@ -10,10 +12,15 @@ Parser.Default.ParseArguments<CommandLineOptions>(args).WithParsed(o =>
                       .GetTypes()
                       .Where(t => t.IsSubclassOf(typeof(Solution)))
                       .FirstOrDefault(x => x.Name.EndsWith(o.Day.ToString()));
-    
-    if(day is not null)
+
+    if (o.Render == 1)
     {
-        var currentDay = (Solution?)Activator.CreateInstance(day, new object[] { o.Path, day });
+        RendererLoop = ConsoleRenderer.InitializeRenderer();
+    }
+
+    if (day is not null)
+    {
+        var currentDay = (Solution?)Activator.CreateInstance(day, new object[] { o.Path, day, o.Render == 1 ? true : false});
 
         if(currentDay is null)
         {
@@ -33,10 +40,15 @@ Parser.Default.ParseArguments<CommandLineOptions>(args).WithParsed(o =>
                 currentDay.SolveAllParts();
                 break;
         }
+
     }
     else
     {
         Console.WriteLine("You need to select a day to run with \'-d\'");
+        ConsoleRenderer.StopRender();
         return;
     }
 });
+
+if (RendererLoop is not null)
+    await RendererLoop;

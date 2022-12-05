@@ -15,7 +15,7 @@ namespace Advent_Of_Code_2022.Days
         private readonly List<string> crateArrangement;
         private readonly char[][][] transform;
 
-        public Day5(string path, Type instanceType) : base(path, instanceType)
+        public Day5(string path, Type instanceType, bool render) : base(path, instanceType, render)
         {
             var splitIndex = input.FindIndex(s => s.Length <= 0);
             crateArrangement = input.Take(splitIndex - 1).ToList();

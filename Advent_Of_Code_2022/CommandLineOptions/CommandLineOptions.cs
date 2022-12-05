@@ -17,5 +17,8 @@ namespace Advent_Of_Code_2022.CommandLineOptions
 
         [Option('a', Required = false, HelpText = "set output with \'-a\' = 1 for first question, 2 for second question, Defualt: both")]
         public int Answer { get; set; }
+
+        [Option('r', Required = false, HelpText = "set result to render or just print answer, 1 for enable 0 for dissable")]
+        public int Render { get; set; } = 0;
     }
 }

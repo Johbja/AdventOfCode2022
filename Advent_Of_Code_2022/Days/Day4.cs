@@ -10,7 +10,7 @@ namespace Advent_Of_Code_2022.Days
     {
         private int[][][] pairs;
 
-        public Day4(string path, Type instanceType) : base(path, instanceType)
+        public Day4(string path, Type instanceType, bool render) : base(path, instanceType, render)
         {
             pairs = input.Select(s => s.Split(',').Select(s => s.Split('-').Select(n => int.Parse(n)).ToArray()).ToArray()).ToArray();
         }

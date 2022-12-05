@@ -11,10 +11,12 @@ namespace Advent_Of_Code_2022.Days
     {
         protected List<string> input;
         protected string path;
+        protected bool render;
 
-        public Solution(string path, Type instanceType) 
+        public Solution(string path, Type instanceType, bool render) 
         {
             this.path = path;
+            this.render = render;
             ReadInput(instanceType.Name, path);
         }
 

@@ -17,7 +17,7 @@ namespace Advent_Of_Code_2022.Days
             new int[] { 6, 0, 3 }
         };
 
-        public Day2(string path, Type instanceType) : base(path, instanceType) 
+        public Day2(string path, Type instanceType, bool render) : base(path, instanceType, render) 
         {
             
         }

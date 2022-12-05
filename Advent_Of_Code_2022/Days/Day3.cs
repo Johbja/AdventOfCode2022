@@ -9,7 +9,7 @@ namespace Advent_Of_Code_2022.Days
 {
     public class Day3 : Solution
     {
-        public Day3(string path, Type instanceType) : base(path, instanceType)
+        public Day3(string path, Type instanceType, bool render) : base(path, instanceType, render)
         {
         }
 

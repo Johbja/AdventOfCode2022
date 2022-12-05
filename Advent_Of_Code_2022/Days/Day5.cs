@@ -44,11 +44,14 @@ namespace Advent_Of_Code_2022.Days
         {
             RunProtectedAction(() =>
             {
-                instructions.ForEach(instructon => PreformInstruction(instructon));
+                char[][] createPositionCopy = new char[createPositions.Length][];
+                createPositions.CopyTo(createPositionCopy, 0);
+
+                instructions.ForEach(instructon => PreformInstructionCreateMover9000(instructon, ref createPositionCopy));
                 string result = "";
                 for (int i = 0; i < createPositions[0].Length; i++)
                 {
-                    var depth = FindTopCreate(i);
+                    var depth = FindTopCreate(i, ref createPositionCopy);
                     var create = createPositions[depth][i];
                     result += create;
                 }
@@ -61,51 +64,60 @@ namespace Advent_Of_Code_2022.Days
         {
             RunProtectedAction(() =>
             {
+                char[][] createPositionCopy = new char[createPositions.Length][];
+                createPositions.CopyTo(createPositionCopy, 0);
 
 
                 PrintAnswerPartTwo("");
             });
         }
 
-        private void PreformInstruction(Instruction instruction)
+        private void PreformInstructionCreateMover9000(Instruction instruction, ref char[][] creates)
         {
-
-            Console.WriteLine($"move {instruction.Amount} from {instruction.From} to {instruction.To}");
-
             for (int amount = 0; amount < instruction.Amount; amount++)
             {
-                
+                var indexToMove = FindTopCreate(instruction.From, ref creates);
+                var indexToSet = FindTopCreate(instruction.To, ref creates) - 1;
 
-                var indexToMove = FindTopCreate(instruction.From);
-                var indexToSet = FindTopCreate(instruction.To) - 1;
+                CheckIndex(indexToMove, indexToSet, instruction.From, instruction.To, creates);
 
-                if (indexToMove >= createPositions.Length)
-                    throw new Exception($"indexToMove = {indexToMove} was outside the range of createPostistions[], max = {createPositions.Length}");
-
-                if (indexToSet >= createPositions.Length)
-                    throw new Exception($"indexToSet = {indexToMove} was outside the range of createPostistions[], max = {createPositions.Length}");
-
-                if(instruction.From >= createPositions[indexToMove].Length)
-                    throw new Exception($"From instruction = {instruction.From} was outside the range of createPostistions[indexToMove][], max = {createPositions[indexToMove].Length}");
-
-                if (instruction.To >= createPositions[indexToSet].Length)
-                    throw new Exception($"To instruction = {instruction.To} was outside the range of createPostistions[indexToSet][], max = {createPositions[indexToMove].Length}");
-
-                var createToMove = createPositions[indexToMove][instruction.From];
-                createPositions[indexToMove][instruction.From] = ' ';
-                createPositions[indexToSet][instruction.To] = createToMove;
+                var createToMove = creates[indexToMove][instruction.From];
+                creates[indexToMove][instruction.From] = ' ';
+                creates[indexToSet][instruction.To] = createToMove;
             }
         }
 
-        private int FindTopCreate(int column)
+        private void PreformInstructionCreateMover9001(Instruction instruction)
+        {
+
+        }
+
+        private int FindTopCreate(int column, ref char[][] creates)
         {
             int currentDepth = 0;
-            while (currentDepth < createPositions.Length - 1 && !char.IsLetter(createPositions[currentDepth][column]))
+            while (currentDepth < creates.Length - 1 && !char.IsLetter(creates[currentDepth][column]))
             {
                 currentDepth++;
             }
             return currentDepth;
         }
+
+        private void CheckIndex(int indexToMove, int indexToSet, int from, int to, char[][] creates)
+        {
+            if (indexToMove >= creates.Length)
+                throw new Exception($"indexToMove = {indexToMove} was outside the range of createPostistions[], max = {creates.Length}");
+
+            if (indexToSet >= creates.Length)
+                throw new Exception($"indexToSet = {indexToMove} was outside the range of createPostistions[], max = {creates.Length}");
+
+            if (from >= creates[indexToMove].Length)
+                throw new Exception($"From instruction = {from} was outside the range of createPostistions[indexToMove][], max = {creates[indexToMove].Length}");
+
+            if (to >= creates[indexToSet].Length)
+                throw new Exception($"To instruction = {to} was outside the range of createPostistions[indexToSet][], max = {creates[indexToMove].Length}");
+        }
+
+
 
 
     }

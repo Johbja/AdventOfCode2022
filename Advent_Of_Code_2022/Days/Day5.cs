@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -12,12 +13,15 @@ namespace Advent_Of_Code_2022.Days
     {
         private List<Instruction> instructions;
         private List<string> crateArrangement;
+        private char[][][] transform;
 
         public Day5(string path, Type instanceType) : base(path, instanceType)
         {
             var splitIndex = input.FindIndex(s => s.Length <= 0);
             crateArrangement = input.Take(splitIndex - 1).ToList();
             var instructionSet = input.Skip(splitIndex + 1).ToList();
+
+            transform = crateArrangement.Select(s => s.Chunk(4).ToArray()).Reverse().ToArray();
 
             instructions = instructionSet.Select(s => s.Split(" ", StringSplitOptions.RemoveEmptyEntries)
                                                        .Select(s => int.TryParse(s, out int i) ? i : -1)
@@ -31,11 +35,11 @@ namespace Advent_Of_Code_2022.Days
         {
             RunProtectedAction(() =>
             {
-                var crateMatrix = TransformCrateMatrix();
+                var crateStack = GenerateCrateStack();
 
-                instructions.ForEach(instruction => PreformInstructionCrateMover9000(instruction, ref crateMatrix));
+                instructions.ForEach(instruction => PreformInstructionCrateMover9000(instruction, ref crateStack));
 
-                var topCrates = FindTopCrates(crateMatrix);
+                var topCrates = crateStack.Select(stack => stack.Peek()).Aggregate("", (a, b) => a + b);
 
                 PrintAnswerPartOne($"top level creates after instructions are {topCrates}");
             });
@@ -45,90 +49,49 @@ namespace Advent_Of_Code_2022.Days
         {
             RunProtectedAction(() =>
             {
-                char[][] crateMatrix = TransformCrateMatrix();
+                var crateStack = GenerateCrateStack();
 
-                instructions.ForEach(instruction => PreformInstructionCrateMover9001(instruction, ref crateMatrix));
+                instructions.ForEach(instruction => PreformInstructionCrateMover9001(instruction, ref crateStack));
 
-                var topCrates = FindTopCrates(crateMatrix);
+                var topCrates = crateStack.Select(stack => stack.Peek()).Aggregate("", (a, b) => a + b);
 
                 PrintAnswerPartTwo($"top level creates after instructions are {topCrates}");
             });
         }
 
-        private char[][] TransformCrateMatrix()
+        private List<Stack<char>> GenerateCrateStack()
         {
-            var transform = crateArrangement.Select(s => s.Chunk(4).ToArray()).ToArray();
+            List<Stack<char>> crateStack = transform[0].Select(x => new Stack<char>()).ToList();
 
-            char[][] crates = new char[transform.Length][];
-
-            for (int i = 0; i < crates.Length; i++)
+            for(int i = 0; i < transform.Length; i++)
             {
-                crates[i] = new char[transform[0].Length];
-                for (int n = 0; n < crates[i].Length; n++)
+                for(int n = 0; n < transform[i].Length; n++)
                 {
-                    crates[i][n] = transform[i][n][1];
+                    if(char.IsLetter(transform[i][n][1]))
+                        crateStack[n].Push(transform[i][n][1]);
                 }
             }
 
-            var extendBy = crates.SelectMany(x => x)
-                                 .Where(c => char.IsLetter(c))
-                                 .Count();
-
-            char[][] createExtention = Enumerable.Range(0, extendBy)
-                                                 .Select(x => Enumerable.Range(0, transform[0].Length)
-                                                                        .Select(n => ' ')
-                                                                        .ToArray()
-                                                  ).ToArray();
-
-            return createExtention.Concat(crates).ToArray();
+            return crateStack;
         }
 
-        private void PreformInstructionCrateMover9000(Instruction instruction, ref char[][] creates)
+        private void PreformInstructionCrateMover9000(Instruction instruction, ref List<Stack<char>> crateStack)
         {
-            var indexToMove = FindTopCrateIndex(instruction.From, ref creates);
-            var indexToSet = FindTopCrateIndex(instruction.To, ref creates) - 1;
-
-            for (int depthOffset = 0; depthOffset < instruction.Amount; depthOffset++)
+            for (int crateToMove = 0; crateToMove < instruction.Amount; crateToMove++)
             {
-                var createToMove = creates[indexToMove + depthOffset][instruction.From];
-                creates[indexToMove + depthOffset][instruction.From] = ' ';
-                creates[indexToSet - depthOffset][instruction.To] = createToMove;
+                crateStack[instruction.To].Push(crateStack[instruction.From].Pop());
             }
         }
 
-        private void PreformInstructionCrateMover9001(Instruction instruction, ref char[][] creates)
+        private void PreformInstructionCrateMover9001(Instruction instruction, ref List<Stack<char>> crateStack)
         {
-            var indexToMove = FindTopCrateIndex(instruction.From, ref creates);
-            var indexToSet = FindTopCrateIndex(instruction.To, ref creates) - 1;
+            var cratesToMove = crateStack[instruction.From].Take(instruction.Amount).Reverse().ToArray();
 
-            for(int i = instruction.Amount; i >= 0; i--)
+            for (int crateToMove = 0; crateToMove < instruction.Amount; crateToMove++)
             {
-                var createToMove = creates[indexToMove + i - 1][instruction.From];
-                creates[indexToMove + i - 1][instruction.From] = ' ';
-                creates[indexToSet -(instruction.Amount-i)][instruction.To] = createToMove;
+                crateStack[instruction.From].Pop();
+                crateStack[instruction.To].Push(cratesToMove[crateToMove]);
             }
-        }
-
-        private int FindTopCrateIndex(int column, ref char[][] creates)
-        {
-            int currentDepth = 0;
-            while (currentDepth < creates.Length - 1 && !char.IsLetter(creates[currentDepth][column]))
-            {
-                currentDepth++;
-            }
-            return currentDepth;
-        }
-
-        private string FindTopCrates(char[][] crateMatrix)
-        {
-            string result = "";
-            for (int i = 0; i < crateMatrix[0].Length; i++)
-            {
-                var depth = FindTopCrateIndex(i, ref crateMatrix);
-                var crate = crateMatrix[depth][i];
-                result += crate;
-            }
-            return result;
         }
     }
 }

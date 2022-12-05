@@ -7,13 +7,21 @@ using System.Threading.Tasks;
 
 namespace Advent_Of_Code_2022.Renderer
 {
+    public enum horizontalAlign { top, center, botttom }
+    public enum verticalAlign { left, center, right }
+
     public class Frame
     {
+        private horizontalAlign horizontalAlign = horizontalAlign.center;
+        private verticalAlign verticalAlign = verticalAlign.center;
+
         private char[][] frame;
 
-        public Frame(string content = "", int width = 100, int heigth = 30)
+        public Frame(List<string> content = null, int width = 100, int heigth = 30, horizontalAlign horizontalAlign = horizontalAlign.center, verticalAlign verticalAlign = verticalAlign.center)
         {
             frame = Enumerable.Range(0, heigth).Select(h => Enumerable.Range(0, width).Select(w => '.').ToArray()).ToArray();
+            this.horizontalAlign = horizontalAlign;
+            this.verticalAlign = verticalAlign;
         }
 
         public Task Render()

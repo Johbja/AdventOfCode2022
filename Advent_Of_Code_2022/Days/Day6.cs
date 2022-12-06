@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,37 +10,18 @@ namespace Advent_Of_Code_2022.Days
 {
     public class Day6 : Solution
     {
+        private string messageStream;
+
         public Day6(string path, Type instanceType, bool render) : base(path, instanceType, render)
         {
-
+            messageStream = input.First();
         }
 
         public override void SolvePartOne()
         {
             RunProtectedAction(() =>
             {
-                string messageStream = input.First();
-                
-                //value - 97 = index 
-                for(int stringPosition = 3; stringPosition < messageStream.Length; stringPosition++)
-                {
-                    var charBucket = Enumerable.Range(0, 54).Select(i => 0).ToArray();
-
-                    for(int subPosition = 0; subPosition < 4; subPosition++)
-                    {
-                        charBucket[ToBucketIndex(messageStream[stringPosition-subPosition])]++;
-                    }
-
-                    if (charBucket.Any(x => x >= 2))
-                    {
-                        continue;
-                    }
-                    else
-                    {
-                        PrintAnswerPartOne($"character positions of {stringPosition+1} is marker");
-                        return;
-                    }
-                }
+                PrintAnswerPartOne($"Character position of {FindSubsetOfDestinctCaracters(subSetLength: 4)} is the marker");
             });
         }
 
@@ -47,32 +29,42 @@ namespace Advent_Of_Code_2022.Days
         {
             RunProtectedAction(() =>
             {
-                string messageStream = input.First();
-
-                //value - 97 = index 
-                for (int stringPosition = 13; stringPosition < messageStream.Length; stringPosition++)
-                {
-                    var charBucket = Enumerable.Range(0, 54).Select(i => 0).ToArray();
-
-                    for (int subPosition = 0; subPosition < 14; subPosition++)
-                    {
-                        charBucket[ToBucketIndex(messageStream[stringPosition - subPosition])]++;
-                    }
-
-                    if (charBucket.Any(x => x >= 2))
-                    {
-                        continue;
-                    }
-                    else
-                    {
-                        PrintAnswerPartTwo($"character positions of {stringPosition + 1} is marker");
-                        return;
-                    }
-                }
+                PrintAnswerPartTwo($"Character position of {FindSubsetOfDestinctCaracters(subSetLength: 14)} is the marker");
             });
         }
 
-        private static int ToBucketIndex(int value)
+        private int FindSubsetOfDestinctCaracters(int subSetLength)
+        {
+            for (int stringPosition = subSetLength - 1; stringPosition < messageStream.Length; stringPosition++)
+            {
+                var charBucket = new int[54];
+                bool skip = false;
+
+                for (int subPosition = 0; subPosition < subSetLength; subPosition++)
+                {
+                    var index = ToBucketIndex(messageStream[stringPosition - subPosition]);
+                    charBucket[index]++;
+                    
+                    if (charBucket[index] >= 2)
+                    {
+                        skip = true;
+                        break;
+                    }
+                }
+
+                if (skip)
+                    continue;
+
+                if (!charBucket.Any(x => x >= 2))
+                    return stringPosition + 1;
+            }
+
+            return -1;
+        }
+
+        //a-z = 97-122, => index = value - 96
+        //A-Z = 65-90, => index = value - 64 + 26
+        private int ToBucketIndex(int value)
             => value >= 97 ? value - 96 : value - 64 + 26;
 
     }

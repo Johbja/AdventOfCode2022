@@ -50,7 +50,7 @@ namespace Advent_Of_Code_2022.Days
 
         //a-z = 97-122, => index = value - 96
         //A-Z = 65-90, => index = value - 64 + 26
-        private static int ToBucketIndex(int value)
+        private int ToBucketIndex(int value)
             => value >= 97 ? value - 96 : value - 64 + 26;
         
     }

@@ -30,7 +30,7 @@ namespace Advent_Of_Code_2022.Days
             RunProtectedAction(() =>
             {
                 var result = input.Select(s => CalculateScore(s)).Sum();
-                PrintAnswerPartOne($"The score following the guide will be {result}");
+                StoreAnswerPartOne($"The score following the guide will be {result}");
             });
         }
 
@@ -39,7 +39,7 @@ namespace Advent_Of_Code_2022.Days
             RunProtectedAction(() =>
             {
                 var result = input.Select(s => CalculateScoreWithCondition(s)).Sum();
-                PrintAnswerPartTwo($"The score following the guide will be {result}");
+                StoreAnswerPartTwo($"The score following the guide will be {result}");
             });
         }
 

@@ -41,7 +41,7 @@ namespace Advent_Of_Code_2022.Days
 
                 var topCrates = crateStack.Select(stack => stack.Peek()).Aggregate("", (a, b) => a + b);
 
-                PrintAnswerPartOne($"top level creates after instructions are {topCrates}");
+                StoreAnswerPartOne($"top level creates after instructions are {topCrates}");
             });
         }
 
@@ -55,7 +55,7 @@ namespace Advent_Of_Code_2022.Days
 
                 var topCrates = crateStack.Select(stack => stack.Peek()).Aggregate("", (a, b) => a + b);
 
-                PrintAnswerPartTwo($"top level creates after instructions are {topCrates}");
+                StoreAnswerPartTwo($"top level creates after instructions are {topCrates}");
             });
         }
 

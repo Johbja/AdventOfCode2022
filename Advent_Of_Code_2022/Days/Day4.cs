@@ -28,7 +28,7 @@ namespace Advent_Of_Code_2022.Days
                     }
                 }
 
-                PrintAnswerPartOne($"Pairs that fully contain eachother is {counter}");
+                StoreAnswerPartOne($"Pairs that fully contain eachother is {counter}");
             });
         }
 
@@ -45,7 +45,7 @@ namespace Advent_Of_Code_2022.Days
                     }
                 }
 
-                PrintAnswerPartTwo($"Pairs that overlap eachother is {counter}");
+                StoreAnswerPartTwo($"Pairs that overlap eachother is {counter}");
             });
         }
     }

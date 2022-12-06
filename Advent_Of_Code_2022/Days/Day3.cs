@@ -26,7 +26,7 @@ namespace Advent_Of_Code_2022.Days
                                    .ForEach(item => bucket[ToBucketIndex(item)] += 1);
 
                 var result = bucket.Select((x, i) => x * i).Sum();
-                PrintAnswerPartOne($"the sum of the priority items are {result}");
+                StoreAnswerPartOne($"the sum of the priority items are {result}");
             });
         }
 
@@ -44,7 +44,7 @@ namespace Advent_Of_Code_2022.Days
                      .ForEach(item => bucket[ToBucketIndex(item)] += 1);
                
                 var result = bucket.Select((x, i) => x * i).Sum();
-                PrintAnswerPartTwo($"the sum of the priority items are {result}");
+                StoreAnswerPartTwo($"the sum of the priority items are {result}");
             });
         }
 

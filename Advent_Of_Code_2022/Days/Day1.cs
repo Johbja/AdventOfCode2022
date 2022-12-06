@@ -20,7 +20,7 @@ namespace Advent_Of_Code_2022.Days
 
                 var result = wrapper.data.Max(n => n.calories);
 
-                PrintAnswerPartOne($"Elf carring max calories is carrying {result} calories");
+                StoreAnswerPartOne($"Elf carring max calories is carrying {result} calories");
             });
         }
 
@@ -35,7 +35,7 @@ namespace Advent_Of_Code_2022.Days
                                          .Take(3)
                                          .Sum(x => x.calories);
 
-                PrintAnswerPartTwo($"Sum of top 3 total calories is {result}");
+                StoreAnswerPartTwo($"Sum of top 3 total calories is {result}");
             });
         }
     }

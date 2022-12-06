@@ -4,8 +4,6 @@ using Advent_Of_Code_2022.Renderer;
 using CommandLine;
 using System.Reflection;
 
-Task RendererLoop = null;
-
 Parser.Default.ParseArguments<CommandLineOptions>(args).WithParsed(o =>
 {
     var day = Assembly.GetExecutingAssembly()
@@ -15,7 +13,7 @@ Parser.Default.ParseArguments<CommandLineOptions>(args).WithParsed(o =>
 
     if (o.Render == 1)
     {
-        RendererLoop = ConsoleRenderer.InitializeRenderer();
+        ConsoleRenderer.InitializeRenderer();
     }
 
     if (day is not null)
@@ -50,5 +48,7 @@ Parser.Default.ParseArguments<CommandLineOptions>(args).WithParsed(o =>
     }
 });
 
-if (RendererLoop is not null)
-    await RendererLoop;
+if(ConsoleRenderer.IsRendering(out Task? renderTask))
+{
+    await renderTask;
+}

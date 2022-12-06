@@ -13,15 +13,16 @@ namespace Advent_Of_Code_2022.Renderer
 
     public class Frame
     {
-        public char Filler { get; set; } = '.';
+        public char Filler { get; set; }
 
         private readonly char[][] frame;
         private HorizontalAlign horizontalAlignment;
         private VerticalAlign verticalAlignment;
         private HorizontalAlign contentHorizontalAlignment;
 
-        public Frame(List<string> content = null, int width = 30, int heigth = 30, HorizontalAlign horizontalAlign = HorizontalAlign.left, VerticalAlign verticalAlign = VerticalAlign.bottom, HorizontalAlign contentHorizontalAlign = HorizontalAlign.center)
+        public Frame(List<string> content = null, int width = 80, int heigth = 30, char filler = '.', HorizontalAlign horizontalAlign = HorizontalAlign.left, VerticalAlign verticalAlign = VerticalAlign.bottom, HorizontalAlign contentHorizontalAlign = HorizontalAlign.center)
         {
+            Filler = filler;
             frame = Enumerable.Range(0, heigth).Select(h => Enumerable.Range(0, width).Select(w => Filler).ToArray()).ToArray();
             horizontalAlignment = horizontalAlign;
             verticalAlignment = verticalAlign;

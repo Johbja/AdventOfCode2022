@@ -9,6 +9,7 @@ namespace Advent_Of_Code_2022.Days
 {
     public class Solution
     {
+        private List<string> output;
         protected List<string> input;
         protected string path;
         protected bool render;
@@ -17,6 +18,7 @@ namespace Advent_Of_Code_2022.Days
         {
             this.path = path;
             this.render = render;
+            output = new();
             ReadInput(instanceType.Name, path);
         }
 
@@ -28,26 +30,44 @@ namespace Advent_Of_Code_2022.Days
         {
             SolvePartOne();
             SolvePartTwo();
+            ShowOutput();
         }
 
-        protected void PrintAnswerPartOne(string answer)
+        private void ShowOutput()
         {
-            Console.WriteLine("--Answer Part One--");
-            Console.WriteLine(answer);
+            if (render)
+                Renderer.ConsoleRenderer.QueueRenderFrame(new Renderer.Frame(content: output, width:100, heigth:output.Count, filler:' '));
+            else
+                PrintOutput();
         }
 
-        protected void PrintAnswerPartTwo(string answer) 
+        private void PrintOutput()
         {
-            Console.WriteLine("--Answer Part Two--");
-            Console.WriteLine(answer);
+            Console.Clear();
+            foreach(var line in output)
+            {
+                Console.WriteLine(line);
+            }
         }
 
-        
+        protected void StoreAnswerPartOne(string answer)
+        {
+            output.Add("--Answer Part One--");
+            output.Add(answer);
+        }
+
+        protected void StoreAnswerPartTwo(string answer) 
+        {
+            output.Add("--Answer Part Two--");
+            output.Add(answer);
+        }
+
         protected void RunProtectedAction(Action action)
         {
             try
             {
                 TimeAction(action);
+                ShowOutput();
             }
             catch(Exception ex)
             {
@@ -61,7 +81,7 @@ namespace Advent_Of_Code_2022.Days
             timer.Start();
             action();
             timer.Stop();
-            Console.WriteLine($"Action exacuted in {timer.Elapsed.TotalSeconds} seconds");
+            output.Add($"Action exacuted in {timer.Elapsed.TotalSeconds} seconds");
         }
 
         protected void ReadInput(string filename, string path = "")

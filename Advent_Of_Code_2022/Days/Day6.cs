@@ -21,7 +21,7 @@ namespace Advent_Of_Code_2022.Days
         {
             RunProtectedAction(() =>
             {
-                PrintAnswerPartOne($"Character position of {FindSubsetOfDestinctCaracters(subSetLength: 4)} is the marker");
+                StoreAnswerPartOne($"Character position of {FindSubsetOfDestinctCaracters(subSetLength: 4)} is the marker");
             });
         }
 
@@ -29,7 +29,7 @@ namespace Advent_Of_Code_2022.Days
         {
             RunProtectedAction(() =>
             {
-                PrintAnswerPartTwo($"Character position of {FindSubsetOfDestinctCaracters(subSetLength: 14)} is the marker");
+                StoreAnswerPartTwo($"Character position of {FindSubsetOfDestinctCaracters(subSetLength: 14)} is the marker");
             });
         }
 

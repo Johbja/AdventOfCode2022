@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -9,30 +10,35 @@ namespace Advent_Of_Code_2022.Renderer
 {
     public static class ConsoleRenderer
     {
-        public static Queue<Frame> RenderQueue = new();
-
-        private static double frameRate = 24;
+        private static readonly double frameRate = 1;
+        private static ConcurrentQueue<Frame> RenderQueue = new();
+        private static Stopwatch timer;
         private static double FPS;
         private static bool exitRender = false;
-        private static Stopwatch timer = new Stopwatch();
 
         public static Task InitializeRenderer()
         {
+            timer = new Stopwatch();
             FPS = (1 / frameRate) * 1000;
             RenderQueue = new();
-            var frame = new Frame();
+            var frame = new Frame(content: new List<string>() { "test", "this is row2", "test 3"});
             RenderQueue.Enqueue(frame);
             return StartRenderer();
         }
 
-        private static Task StartRenderer()
+        public static void AddRenderFrame(Frame frame)
         {
-            return Task.Run(async () => await RenderLoop());
+            RenderQueue.Enqueue(frame);
         }
 
         public static void StopRender()
         {
             exitRender = true;
+        }
+
+        private static Task StartRenderer()
+        {
+            return Task.Run(async () => await RenderLoop());
         }
 
         private static async Task RenderLoop()
@@ -44,10 +50,11 @@ namespace Advent_Of_Code_2022.Renderer
 
                 Console.Clear();
 
-                if(RenderQueue.Count > 1)
-                    await RenderQueue.Dequeue().Render();
-                else
-                    await RenderQueue.Peek().Render();
+                if(RenderQueue.Count > 1 && RenderQueue.TryDequeue(out Frame frame))
+                    await frame.Render();
+                
+                if (RenderQueue.Count == 1 && RenderQueue.TryPeek(out Frame lastFrame))
+                    await lastFrame.Render();
                 
                 timer.Stop();
                 if (timer.ElapsedMilliseconds < FPS)

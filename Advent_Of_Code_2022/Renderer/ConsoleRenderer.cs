@@ -12,7 +12,7 @@ namespace Advent_Of_Code_2022.Renderer
     public static class ConsoleRenderer
     {
 
-        private static readonly double frameRate = 1;
+        private static readonly double frameRate = 10;
         private static Task renderTask;
         private static ConcurrentQueue<Frame> RenderQueue = new();
         private static Stopwatch timer;
@@ -62,8 +62,6 @@ namespace Advent_Of_Code_2022.Renderer
 
         private static async Task RenderLoop()
         {
-            bool firstRender = true;
-
             while (!exitRender)
             {
                 timer.Stop();
@@ -74,11 +72,8 @@ namespace Advent_Of_Code_2022.Renderer
                     continue;
                 }
 
-                if (!firstRender && timer.ElapsedMilliseconds < FPS)
+                if (timer.ElapsedMilliseconds < FPS)
                     Thread.Sleep(TimeSpan.FromMilliseconds(FPS - timer.ElapsedMilliseconds));
-
-                if(!firstRender)
-                    firstRender = false;
 
                 timer.Reset();
                 timer.Start();

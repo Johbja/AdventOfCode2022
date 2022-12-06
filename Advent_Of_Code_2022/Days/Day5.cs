@@ -71,7 +71,7 @@ namespace Advent_Of_Code_2022.Days
                         crateStack[n].Push(transform[i][n][1]);
                 }
             }
-
+            RenderCurrentState(crateStack.Select(stack => stack.ToArray()).ToArray());
             return crateStack;
         }
 
@@ -80,6 +80,7 @@ namespace Advent_Of_Code_2022.Days
             for (int crateToMove = 0; crateToMove < instruction.Amount; crateToMove++)
             {
                 crateStack[instruction.To].Push(crateStack[instruction.From].Pop());
+                RenderCurrentState(crateStack.Select(stack => stack.ToArray()).ToArray());
             }
         }
 
@@ -91,7 +92,30 @@ namespace Advent_Of_Code_2022.Days
             {
                 crateStack[instruction.From].Pop();
                 crateStack[instruction.To].Push(cratesToMove[crateToMove]);
+                RenderCurrentState(crateStack.Select(stack => stack.ToArray()).ToArray());
             }
+        }
+
+        private void RenderCurrentState(char[][] crates)
+        {
+            List<string> output = new();
+            var maxHeigth = crates.Max(stack => stack.Length);
+            var stackAsArray = crates.Select(x => x.ToArray()).ToArray();
+
+            for(int y = maxHeigth -1; y >= 0; y--)
+            {
+                string row = "";
+                for(int x = 0; x < stackAsArray.Length; x++)
+                {
+                    if (y >= stackAsArray[x].Length)
+                        row += "...";
+                    else
+                        row += $"[{stackAsArray[x][y]}]";
+                }
+                output.Add(row);
+            }
+
+            Renderer.ConsoleRenderer.QueueRenderFrame(new Renderer.Frame(content: output, heigth:40, width: output.Max(s => s.Length)));   
         }
     }
 }

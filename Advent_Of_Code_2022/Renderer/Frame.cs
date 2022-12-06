@@ -35,10 +35,13 @@ namespace Advent_Of_Code_2022.Renderer
         {
             return Task.Run(() =>
             {
-                foreach (var row in frame)
-                {
-                    Console.WriteLine(new string(row));
-                }
+                int col = frame.Length;
+                int row = frame[0].Length;
+                var buffer = frame.SelectMany(a => a.Select(c => (byte)c).Concat(new byte[] { (byte)'\n'}).ToArray()).ToArray();
+
+                Console.SetCursorPosition(0, 0);
+                using Stream stdout = Console.OpenStandardOutput(col * row);
+                stdout.Write(buffer, 0, buffer.Length);
             });
         }
 

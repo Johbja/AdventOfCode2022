@@ -117,7 +117,7 @@ namespace Advent_Of_Code_2022.Days
                 output.Add(row);
             }
 
-            Renderer.ConsoleRenderer.QueueRenderFrame(new Renderer.Frame(content: output, heigth:40, width: output.Max(s => s.Length)));   
+            Renderer.ConsoleRenderer.QueueRenderFrame(new Renderer.Frame(content: output, heigth:20, width: output.Max(s => s.Length)));   
         }
     }
 }

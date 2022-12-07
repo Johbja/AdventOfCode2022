@@ -41,6 +41,7 @@ namespace Advent_Of_Code_2022.Days
             {
                 var charBucket = new int[54];
                 bool skip = false;
+                int skipIndex = stringPosition;
 
                 for (int subPosition = 0; subPosition < subSetLength; subPosition++)
                 {
@@ -50,15 +51,18 @@ namespace Advent_Of_Code_2022.Days
                     if (charBucket[index] >= 2)
                     {
                         skip = true;
+                        skipIndex = stringPosition - subPosition + subSetLength - 1;
                         break;
                     }
                 }
 
                 if (skip)
+                {
+                    stringPosition = skipIndex;
                     continue;
+                }
 
-                if (!charBucket.Any(x => x >= 2))
-                    return stringPosition + 1;
+                return stringPosition + 1;
             }
 
             return -1;

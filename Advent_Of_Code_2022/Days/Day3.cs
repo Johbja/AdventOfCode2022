@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Advent_Of_Code_2022.CustomAttributes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -9,11 +10,12 @@ namespace Advent_Of_Code_2022.Days
 {
     public class Day3 : Solution
     {
+        [DayInfo("3", "Rucksack Reorganization")]
         public Day3(string path, Type instanceType, bool render) : base(path, instanceType, render)
         {
         }
 
-        public override void SolvePartOne()
+        protected override void SolvePartOne()
         {
             RunProtectedAction(() =>
             {
@@ -30,7 +32,7 @@ namespace Advent_Of_Code_2022.Days
             });
         }
 
-        public override void SolvePartTwo()
+        protected override void SolvePartTwo()
         {
             RunProtectedAction(() =>
             {

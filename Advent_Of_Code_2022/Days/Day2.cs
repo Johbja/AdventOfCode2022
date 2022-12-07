@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Advent_Of_Code_2022.CustomAttributes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Advent_Of_Code_2022.Days
 {
+    [DayInfo("2", "Rock Paper Scissors")]
     public class Day2 : Solution
     {
         private int arrayLength = 3;
@@ -25,7 +27,7 @@ namespace Advent_Of_Code_2022.Days
         private int ToIndex(char input, int offset) 
             => ((int)input + offset) % arrayLength;
 
-        public override void SolvePartOne()
+        protected override void SolvePartOne()
         {
             RunProtectedAction(() =>
             {
@@ -34,7 +36,7 @@ namespace Advent_Of_Code_2022.Days
             });
         }
 
-        public override void SolvePartTwo()
+        protected override void SolvePartTwo()
         {
             RunProtectedAction(() =>
             {

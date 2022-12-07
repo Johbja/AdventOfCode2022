@@ -22,14 +22,26 @@ namespace Advent_Of_Code_2022.Days
             ReadInput(instanceType.Name, path);
         }
 
-        public virtual void SolvePartOne() {}
+        protected virtual void SolvePartOne() {}
 
-        public virtual void SolvePartTwo() {}
+        protected virtual void SolvePartTwo() {}
 
-        public void SolveAllParts()
+        public void Solve(int option)
         {
-            SolvePartOne();
-            SolvePartTwo();
+            switch (option)
+            {
+                case 1:
+                    SolvePartOne();
+                    break;
+                case 2:
+                    SolvePartTwo();
+                    break;
+                default:
+                    SolvePartOne();
+                    SolvePartTwo();
+                    break;
+            }
+
             ShowOutput();
         }
 
@@ -43,7 +55,6 @@ namespace Advent_Of_Code_2022.Days
 
         private void PrintOutput()
         {
-            Console.Clear();
             foreach(var line in output)
             {
                 Console.WriteLine(line);
@@ -67,11 +78,10 @@ namespace Advent_Of_Code_2022.Days
             try
             {
                 TimeAction(action);
-                ShowOutput();
             }
             catch(Exception ex)
             {
-                Console.WriteLine($"Error occured in {action.Method.Name}, {ex.Message}");
+                output.Add($"Error occured in {action.Method.Name}, {ex.Message}");
             }
         }
 

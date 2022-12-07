@@ -1,4 +1,5 @@
 ﻿using Advent_Of_Code_2022.CommandLineOptions;
+using Advent_Of_Code_2022.CustomAttributes;
 using Advent_Of_Code_2022.Days;
 using Advent_Of_Code_2022.Renderer;
 using CommandLine;
@@ -26,19 +27,14 @@ Parser.Default.ParseArguments<CommandLineOptions>(args).WithParsed(o =>
             return;
         }
 
-        switch (o.Answer)
+        var dayInfo = (DayInfo)Attribute.GetCustomAttribute(day, typeof(DayInfo));
+
+        if(dayInfo is not null)
         {
-            case 1:
-                currentDay.SolvePartOne();
-                break;
-            case 2:
-                currentDay.SolvePartTwo();
-                break;
-            default:
-                currentDay.SolveAllParts();
-                break;
+            Console.WriteLine($"Solution for Day {dayInfo.Day}: {dayInfo.ProblemName}");
         }
 
+        currentDay.Solve(o.Answer);
     }
     else
     {

@@ -1,14 +1,16 @@
-﻿using Advent_Of_Code_2022.Utility.Day1;
+﻿using Advent_Of_Code_2022.CustomAttributes;
+using Advent_Of_Code_2022.Utility.Day1;
 
 namespace Advent_Of_Code_2022.Days
 {
+    [DayInfo("1", "Calorie Counting")]
     public class Day1 : Solution
     {
         private Wrapper wrapper;
 
         public Day1(string path, Type currentDay, bool render) : base(path, currentDay, render) { }
 
-        public override void SolvePartOne()
+        protected override void SolvePartOne()
         {
             RunProtectedAction(() =>
             {
@@ -24,7 +26,7 @@ namespace Advent_Of_Code_2022.Days
             });
         }
 
-        public override void SolvePartTwo()
+        protected override void SolvePartTwo()
         {
             RunProtectedAction(() =>
             {

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Advent_Of_Code_2022.CustomAttributes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Advent_Of_Code_2022.Days
 {
+    [DayInfo("4", "Camp Cleanup")]
     public class Day4 : Solution
     {
         private int[][][] pairs;
@@ -15,7 +17,7 @@ namespace Advent_Of_Code_2022.Days
             pairs = input.Select(s => s.Split(',').Select(s => s.Split('-').Select(n => int.Parse(n)).ToArray()).ToArray()).ToArray();
         }
 
-        public override void SolvePartOne()
+        protected override void SolvePartOne()
         {
             RunProtectedAction(() =>
             {
@@ -32,7 +34,7 @@ namespace Advent_Of_Code_2022.Days
             });
         }
 
-        public override void SolvePartTwo()
+        protected override void SolvePartTwo()
         {
             RunProtectedAction(() =>
             {

@@ -80,7 +80,6 @@ namespace Advent_Of_Code_2022.Renderer
 
                 if (RenderQueue.TryDequeue(out Frame? frame))
                 {
-                    //Console.Clear();
                     await frame.Render();
                 }
             }

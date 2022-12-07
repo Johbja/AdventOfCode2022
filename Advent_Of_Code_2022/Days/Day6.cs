@@ -1,4 +1,5 @@
-﻿using Advent_Of_Code_2022.Utility.Day5;
+﻿using Advent_Of_Code_2022.CustomAttributes;
+using Advent_Of_Code_2022.Utility.Day5;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace Advent_Of_Code_2022.Days
 {
+    [DayInfo("6", "Tuning Trouble")]
     public class Day6 : Solution
     {
         private string messageStream;
@@ -17,7 +19,7 @@ namespace Advent_Of_Code_2022.Days
             messageStream = input.First();
         }
 
-        public override void SolvePartOne()
+        protected override void SolvePartOne()
         {
             RunProtectedAction(() =>
             {
@@ -25,7 +27,7 @@ namespace Advent_Of_Code_2022.Days
             });
         }
 
-        public override void SolvePartTwo()
+        protected override void SolvePartTwo()
         {
             RunProtectedAction(() =>
             {

@@ -5,10 +5,12 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using Advent_Of_Code_2022.CustomAttributes;
 using Advent_Of_Code_2022.Utility.Day5;
 
 namespace Advent_Of_Code_2022.Days
 {
+    [DayInfo("5", "Supply Stacks")]
     public class Day5 : Solution
     {
         private readonly List<Instruction> instructions;
@@ -31,7 +33,7 @@ namespace Advent_Of_Code_2022.Days
                                           .ToList();
         }
 
-        public override void SolvePartOne()
+        protected override void SolvePartOne()
         {
             RunProtectedAction(() =>
             {
@@ -45,7 +47,7 @@ namespace Advent_Of_Code_2022.Days
             });
         }
 
-        public override void SolvePartTwo()
+        protected override void SolvePartTwo()
         {
             RunProtectedAction(() =>
             {

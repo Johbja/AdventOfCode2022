@@ -14,14 +14,14 @@ namespace Advent_Of_Code_2022.Days
     [DayInfo("7", "No Space Left On Device")]
     public class Day7 : Solution
     {
-        private string[] directory;
+        private string[] inputAsArray;
         private Utility.Day7.Directory rootDirectory;
         private readonly long totalDiskSpace = 70000000;
         private readonly long discSpaceRequierd = 30000000;
 
         public Day7(string path, Type instanceType, bool render) : base(path, instanceType, render)
         {
-            directory = input.ToArray();
+            inputAsArray = input.ToArray();
             rootDirectory = ParseDirectory("root", 1).dir;
         }
 
@@ -29,7 +29,11 @@ namespace Advent_Of_Code_2022.Days
         {
             RunProtectedAction(() =>
             {
-                var sizeSum = rootDirectory.Directories.Flatten(x => x.Directories).Select(x => x.Size).Where(size => size <= 100000).Sum();
+                var sizeSum = rootDirectory.Directories.Flatten(x => x.Directories)
+                                                       .Select(x => x.Size)
+                                                       .Where(size => size <= 100000)
+                                                       .Sum();
+
                 StoreAnswerPartOne($"sum of size of at most 100000 is {sizeSum}");
             });
         }
@@ -41,7 +45,10 @@ namespace Advent_Of_Code_2022.Days
                 var unusedDiskSpace =  totalDiskSpace - rootDirectory.Size;
                 var minRequierdDiskSpace = discSpaceRequierd - unusedDiskSpace;
 
-                var directoryToRemove = rootDirectory.Directories.Flatten(x => x.Directories).Where(dir => dir.Size >= minRequierdDiskSpace).OrderBy(x => x.Size).First();
+                var directoryToRemove = rootDirectory.Directories.Flatten(x => x.Directories)
+                                                                 .Where(dir => dir.Size >= minRequierdDiskSpace)
+                                                                 .OrderBy(x => x.Size)
+                                                                 .First();
 
                 StoreAnswerPartTwo($"directory to remove is [{directoryToRemove.Name}] with size of {directoryToRemove.Size} leaveing a total of {unusedDiskSpace +  directoryToRemove.Size} space free");
             });
@@ -51,12 +58,12 @@ namespace Advent_Of_Code_2022.Days
         {
             var dir = new Utility.Day7.Directory(name);
 
-            for(int i = offset; i < directory.Length; i++)
+            for(int i = offset; i < inputAsArray.Length; i++)
             {
-                if (directory[i] == "$ cd ..")
+                if (inputAsArray[i] == "$ cd ..")
                     return (dir, i);
 
-                var instruction = directory[i].Split(' ');
+                var instruction = inputAsArray[i].Split(' ');
 
                 if (instruction.Length >= 2 && long.TryParse(instruction[0], out long fileSize))
                 {
@@ -71,7 +78,7 @@ namespace Advent_Of_Code_2022.Days
                 }
             }
 
-            return (dir, directory.Length -1);
+            return (dir, inputAsArray.Length -1);
         }
     }
 }

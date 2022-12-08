@@ -27,12 +27,12 @@ namespace Advent_Of_Code_2022.Days
             {
                 for (int x = 1; x < heightMap[y].Length - 1; x++)
                 {
-                    var treeInfo = CheckTree(y, x);
+                    var (visible, score) = CheckTree(y, x);
 
-                    visibleTrees += treeInfo.visible;
+                    visibleTrees += visible;
                     
-                    if (treeInfo.score > maxScore)
-                        maxScore = treeInfo.score;
+                    if (score > maxScore)
+                        maxScore = score;
                 }
             }
         }

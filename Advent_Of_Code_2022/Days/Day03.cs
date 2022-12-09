@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 
 namespace Advent_Of_Code_2022.Days
 {
-    public class Day3 : Solution
+    public class Day03 : Solution
     {
         [DayInfo("3", "Rucksack Reorganization")]
-        public Day3(string path, Type instanceType, bool render) : base(path, instanceType, render)
+        public Day03(string path, Type instanceType, bool render) : base(path, instanceType, render)
         {
         }
 

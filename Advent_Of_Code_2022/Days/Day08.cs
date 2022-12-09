@@ -9,13 +9,13 @@ using System.Threading.Tasks;
 namespace Advent_Of_Code_2022.Days
 {
     [DayInfo("8", "Treetop Tree House")]
-    public class Day8 : Solution
+    public class Day08 : Solution
     {
         private readonly int[][] heightMap;
         private readonly int maxScore;
         private readonly int visibleTrees;
 
-        public Day8(string path, Type instanceType, bool render) : base(path, instanceType, render)
+        public Day08(string path, Type instanceType, bool render) : base(path, instanceType, render)
         {
             heightMap = input.Select(s => s.Select(c => int.Parse(c.ToString())).ToArray()).ToArray();
 

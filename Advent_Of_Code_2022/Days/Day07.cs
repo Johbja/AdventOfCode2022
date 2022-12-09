@@ -12,14 +12,14 @@ namespace Advent_Of_Code_2022.Days
 {
 
     [DayInfo("7", "No Space Left On Device")]
-    public class Day7 : Solution
+    public class Day07 : Solution
     {
         private string[] inputAsArray;
         private Utility.Day7.Directory rootDirectory;
         private readonly long totalDiskSpace = 70000000;
         private readonly long discSpaceRequierd = 30000000;
 
-        public Day7(string path, Type instanceType, bool render) : base(path, instanceType, render)
+        public Day07(string path, Type instanceType, bool render) : base(path, instanceType, render)
         {
             inputAsArray = input.ToArray();
             rootDirectory = ParseDirectory("root", 1).dir;

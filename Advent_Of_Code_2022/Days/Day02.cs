@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Advent_Of_Code_2022.Days
 {
     [DayInfo("2", "Rock Paper Scissors")]
-    public class Day2 : Solution
+    public class Day02 : Solution
     {
         private int arrayLength = 3;
         
@@ -19,7 +19,7 @@ namespace Advent_Of_Code_2022.Days
             new int[] { 6, 0, 3 }
         };
 
-        public Day2(string path, Type instanceType, bool render) : base(path, instanceType, render) 
+        public Day02(string path, Type instanceType, bool render) : base(path, instanceType, render) 
         {
             
         }

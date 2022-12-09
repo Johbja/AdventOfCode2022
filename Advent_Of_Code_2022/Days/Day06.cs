@@ -10,11 +10,11 @@ using System.Threading.Tasks;
 namespace Advent_Of_Code_2022.Days
 {
     [DayInfo("6", "Tuning Trouble")]
-    public class Day6 : Solution
+    public class Day06 : Solution
     {
         private string messageStream;
 
-        public Day6(string path, Type instanceType, bool render) : base(path, instanceType, render)
+        public Day06(string path, Type instanceType, bool render) : base(path, instanceType, render)
         {
             messageStream = input.First();
         }

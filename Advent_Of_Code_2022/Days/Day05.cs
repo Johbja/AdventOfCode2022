@@ -11,13 +11,13 @@ using Advent_Of_Code_2022.Utility.Day5;
 namespace Advent_Of_Code_2022.Days
 {
     [DayInfo("5", "Supply Stacks")]
-    public class Day5 : Solution
+    public class Day05 : Solution
     {
         private readonly List<Instruction> instructions;
         private readonly List<string> crateArrangement;
         private readonly char[][][] transform;
 
-        public Day5(string path, Type instanceType, bool render) : base(path, instanceType, render)
+        public Day05(string path, Type instanceType, bool render) : base(path, instanceType, render)
         {
             var splitIndex = input.FindIndex(s => s.Length <= 0);
             crateArrangement = input.Take(splitIndex - 1).ToList();

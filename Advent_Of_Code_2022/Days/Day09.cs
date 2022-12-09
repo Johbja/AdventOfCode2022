@@ -10,11 +10,11 @@ using System.Threading.Tasks;
 namespace Advent_Of_Code_2022.Days
 {
     [DayInfo("9", "Rope Bridge")]
-    public class Day9 : Solution
+    public class Day09 : Solution
     {
         private readonly (int x, int y)[] movePattern;
 
-        public Day9(string path, Type instanceType, bool render) : base(path, instanceType, render)
+        public Day09(string path, Type instanceType, bool render) : base(path, instanceType, render)
         {
             movePattern = input.SelectMany(x => SplitInstructions(x).ToArray()).ToArray();
         }

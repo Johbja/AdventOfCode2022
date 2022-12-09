@@ -4,11 +4,11 @@ using Advent_Of_Code_2022.Utility.Day1;
 namespace Advent_Of_Code_2022.Days
 {
     [DayInfo("1", "Calorie Counting")]
-    public class Day1 : Solution
+    public class Day01 : Solution
     {
         private Wrapper wrapper;
 
-        public Day1(string path, Type currentDay, bool render) : base(path, currentDay, render) { }
+        public Day01(string path, Type currentDay, bool render) : base(path, currentDay, render) { }
 
         protected override void SolvePartOne()
         {

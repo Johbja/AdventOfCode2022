@@ -13,6 +13,7 @@ namespace Advent_Of_Code_2022.Days
     public class Day09 : Solution
     {
         private readonly (int x, int y)[] movePattern;
+        private List<(int x, int y)>[] positions;
 
         public Day09(string path, Type instanceType, bool render) : base(path, instanceType, render)
         {
@@ -23,9 +24,8 @@ namespace Advent_Of_Code_2022.Days
         {
             RunProtectedAction(() =>
             {
-                var positions = SimulateRope();
-                var positionsVisitedOnce = positions.Distinct().Count();
-
+                positions = SimulateRope(knots: 10, positionsToTrack: new int[2] { 1, 9 });
+                var positionsVisitedOnce = positions[0].Distinct().Count();
                 StoreAnswerPartOne($"Positions visited by tail once {positionsVisitedOnce}");
             });
         }
@@ -34,10 +34,10 @@ namespace Advent_Of_Code_2022.Days
         {
             RunProtectedAction(() =>
             {
+                if (positions is null)
+                    throw new Exception("result from first part was not calcualte correctly, position list is null");
 
-                var positions = SimulateRope(knots: 10);
-                var positionsVisitedOnce = positions.Distinct().Count();
-
+                var positionsVisitedOnce = positions[1].Distinct().Count();
                 StoreAnswerPartTwo($"Positions visited by tail once {positionsVisitedOnce}");
             });
         }
@@ -60,9 +60,10 @@ namespace Advent_Of_Code_2022.Days
             return instructions;
         }
 
-        private List<(int x, int y)> SimulateRope(int knots = 2)
+        private List<(int x, int y)>[] SimulateRope(int knots = 2, int[] positionsToTrack = null)
         {
-            List<(int x, int y)> endTailPositions = new();
+            positionsToTrack ??= new int[1] { 1 };
+            List<(int x, int y)>[] endTailPositions = Enumerable.Range(0, positionsToTrack.Length).Select(x => new List<(int x, int y)>()).ToArray();
             (int x, int y)[] knotPositions = new (int x, int y)[knots];
 
             foreach (var (x, y) in movePattern)
@@ -74,7 +75,10 @@ namespace Advent_Of_Code_2022.Days
                     knotPositions[i] = GetNewTailPosition(knotPositions[i - 1], knotPositions[i]);
                 }
 
-                endTailPositions.Add(knotPositions.Last());
+                for(int i = 0; i < endTailPositions.Length; i++)
+                {
+                    endTailPositions[i].Add(knotPositions[positionsToTrack[i]]);
+                }
             }
 
             return endTailPositions;

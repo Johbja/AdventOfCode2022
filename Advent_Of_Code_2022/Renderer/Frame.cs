@@ -33,6 +33,9 @@ namespace Advent_Of_Code_2022.Renderer
 
         public Task Render()
         {
+            if(frame is null)
+                return Task.CompletedTask;
+
             return Task.Run(() =>
             {
                 int col = frame[0].Length;

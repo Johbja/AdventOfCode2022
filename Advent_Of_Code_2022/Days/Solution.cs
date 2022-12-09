@@ -48,7 +48,7 @@ namespace Advent_Of_Code_2022.Days
         private void ShowOutput()
         {
             if (render)
-                Renderer.ConsoleRenderer.QueueRenderFrame(new Renderer.Frame(content: output, width:100, heigth:output.Count, filler:' '));
+                Renderer.ConsoleRenderer.QueueRenderFrame(new Renderer.Frame(content: output, width: 100, heigth: output.Count, filler: ' '));
             else
                 PrintOutput();
         }

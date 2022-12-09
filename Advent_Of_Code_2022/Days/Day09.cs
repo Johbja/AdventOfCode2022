@@ -80,6 +80,20 @@ namespace Advent_Of_Code_2022.Days
             return endTailPositions;
         }
 
+        private (int x, int y) GetNewTailPosition((int x, int y) head, (int x, int y) tail)
+        {
+            var distance = (int)MathF.Sqrt(((tail.x - head.x) * (tail.x - head.x)) + ((tail.y - head.y) * (tail.y - head.y)));
+
+            if(distance >= 2)
+            {
+                (int x, int y) movementVector = (head.x - tail.x, head.y - tail.y);
+                movementVector = (movementVector.x - (movementVector.x / 2), movementVector.y - (movementVector.y / 2));
+                return (tail.x + movementVector.x, tail.y + movementVector.y);
+            }
+
+            return tail;
+        }
+
         private static (int x, int y) ParseDirection(string direction) => direction switch
         {
             "R" => (1, 0),
@@ -88,55 +102,5 @@ namespace Advent_Of_Code_2022.Days
             "D" => (0, -1),
             _ => (0, 0),
         };
-
-        private (int x, int y) GetNewTailPosition((int x, int y) head, (int x, int y) tail)
-        {
-            if ((head.x >= tail.x + 2 && head.y >= tail.y + 1)
-            || (head.x >= tail.x + 1 && head.y >= tail.y + 2))
-            {
-                return (tail.x + 1, tail.y + 1);
-            }
-
-            if ((head.x >= tail.x + 2 && head.y <= tail.y - 1)
-            || (head.x >= tail.x + 1 && head.y <= tail.y - 2))
-            {
-                return (tail.x + 1, tail.y - 1);
-            }
-
-            if ((head.x <= tail.x - 2 && head.y <= tail.y - 1)
-            || (head.x <= tail.x - 1 && head.y <= tail.y - 2))
-            {
-                return (tail.x - 1, tail.y - 1);
-            }
-
-            if ((head.x <= tail.x - 2 && head.y >= tail.y + 1)
-            || (head.x <= tail.x - 1 && head.y >= tail.y + 2))
-            {
-                return (tail.x - 1, tail.y + 1);
-            }
-
-            if (head.x >= tail.x + 2)
-            {
-                return (tail.x + 1, tail.y);
-            }
-
-            if (head.x <= tail.x - 2)
-            {
-                return (tail.x - 1, tail.y);
-            }
-
-            if (head.y >= tail.y + 2)
-            {
-                return (tail.x, tail.y + 1);
-            }
-
-            if (head.y <= tail.y - 2)
-            {
-                return (tail.x, tail.y - 1);
-            }
-
-            return tail;
-        }
-
     }
 }

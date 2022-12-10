@@ -61,16 +61,30 @@ namespace Advent_Of_Code_2022.Days
             }
         }
 
-        protected void StoreAnswerPartOne(string answer)
+        protected void StoreAnswerPartOne(string answer = null, List<string> answers = null)
         {
             output.Add("--Answer Part One--");
-            output.Add(answer);
+            
+            if(answers == null)
+            {
+                output.Add(answer);
+                return;
+            }
+
+            output.AddRange(answers);
         }
 
-        protected void StoreAnswerPartTwo(string answer) 
+        protected void StoreAnswerPartTwo(string answer = null, List<string> answers = null) 
         {
             output.Add("--Answer Part Two--");
-            output.Add(answer);
+            
+            if (answers == null)
+            {
+                output.Add(answer);
+                return;
+            }
+
+            output.AddRange(answers);
         }
 
         protected void RunProtectedAction(Action action)

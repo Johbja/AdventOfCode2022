@@ -44,13 +44,7 @@ namespace Advent_Of_Code_2022.Days
                     render = crt.Simulate();
                 }
 
-                string output = "";
-                for (int h = 0; h < render.Length; h++)
-                {
-                    output += new string(render[h]) + "\n";
-                }
-
-                StoreAnswerPartTwo(output);
+                StoreAnswerPartTwo(answers: render.Select(s => new string(s)).ToList());
             });
         }
 

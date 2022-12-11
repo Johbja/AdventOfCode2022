@@ -52,7 +52,7 @@ namespace Advent_Of_Code_2022.Days
                 }
             }
 
-            return monkeys.OrderByDescending(x => x.InspectCount).Take(2).Aggregate(1l, (a, b) => a * b.InspectCount);
+            return monkeys.OrderByDescending(x => x.InspectCount).Take(2).Aggregate(1L, (a, b) => a * b.InspectCount);
         }
 
         private List<Monkey> CreateMonkeys(List<string[]> monkeysAsText)

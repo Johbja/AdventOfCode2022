@@ -11,8 +11,8 @@ namespace Advent_Of_Code_2022.Utility.Day11
         public int Id { get; private set; }
         public long InspectCount { get; private set; }
         public long Divider { get; private set; }
-        public Queue<long> items { get; private set; }
         
+        private Queue<long> items;
         private Func<long, long> operation;
         private Func<long, int> test;
         private Func<int, Monkey?> aim;

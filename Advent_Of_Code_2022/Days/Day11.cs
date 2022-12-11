@@ -1,12 +1,5 @@
 ﻿using Advent_Of_Code_2022.CustomAttributes;
-using Advent_Of_Code_2022.Utility.Day10;
 using Advent_Of_Code_2022.Utility.Day11;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Advent_Of_Code_2022.Days
 {

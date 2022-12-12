@@ -92,6 +92,7 @@ namespace Advent_Of_Code_2022.Days
         private List<Node> RunAStar()
         {
             List<Node> openSet = new();
+            List<Node> closedSet = new();
 
             openSet.Add(start);
 
@@ -115,9 +116,18 @@ namespace Advent_Of_Code_2022.Days
                     if (neighbor.Elevation - currentNode.Elevation > 1 && currentNode.Elevation != 83)
                         continue;
 
+
                     var tentativeGS = currentNode.Gscore + 1;
                     if (tentativeGS < neighbor.Gscore)
                     {
+
+
+                        //if (neighbor.X == 93 && neighbor.Y == 29)
+                        //{
+                        //    ConsoleRenderer.QueueRenderFrame(CreateCurretStatusAsFrame(openSet, closedSet, currentNode));
+                        //    var t = 0;
+                        //}
+
                         neighbor.CameFrom = currentNode;
                         neighbor.Gscore = tentativeGS;
                         neighbor.Fscore = tentativeGS + EsitmateDistance(neighbor);
@@ -132,6 +142,8 @@ namespace Advent_Of_Code_2022.Days
                 }
 
                 openSet.Remove(currentNode);
+                closedSet.Add(currentNode);
+                ConsoleRenderer.QueueRenderFrame(CreateCurretStatusAsFrame(openSet, closedSet, currentNode));
             }
 
             return new();

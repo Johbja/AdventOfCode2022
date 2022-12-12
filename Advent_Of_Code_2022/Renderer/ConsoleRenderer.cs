@@ -12,7 +12,7 @@ namespace Advent_Of_Code_2022.Renderer
     public static class ConsoleRenderer
     {
 
-        private static readonly double frameRate = 10;
+        private static readonly double frameRate = 60;
         private static Task renderTask;
         private static ConcurrentQueue<Frame> RenderQueue = new();
         private static Stopwatch timer;

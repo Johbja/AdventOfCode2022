@@ -19,7 +19,7 @@ Parser.Default.ParseArguments<CommandLineOptions>(args).WithParsed(o =>
 
     if (day is not null)
     {
-        var currentDay = (Solution?)Activator.CreateInstance(day, new object[] { o.Path, day, o.Render == 1 ? true : false});
+        var currentDay = (Solution?)Activator.CreateInstance(day, new object[] { o.Path, day, o.Render == 1});
 
         if(currentDay is null)
         {

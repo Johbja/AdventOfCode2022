@@ -15,49 +15,20 @@ namespace Advent_Of_Code_2022.Days
     [DayInfo("12", "Hill Climbing Algorithm")]
     public class Day12 : Solution
     {
-        Node[][] map;
-        Node start;
-        Node goal;
-
         public Day12(string path, Type instanceType, bool render) : base(path, instanceType, render)
         {
-            //S = 83
-            //E = 69
-
-            map = input.Select((s, h) => s.Select((c, w) => new Node(c, w, h)).ToArray()).ToArray();
-
-            for (int h = 0; h < map.Length; h++)
-            {
-                for (int w = 0; w < map[h].Length; w++)
-                {
-                    if (map[h][w].Elevation == 83)
-                        start = map[h][w];
-
-                    if (map[h][w].Elevation == 69)
-                        goal = map[h][w];
-
-                    map[h][w].SetNeighbors(GetNeighbors(h, w));
-                }
-            }
-
         }
 
         protected override void SolvePartOne()
         {
             RunProtectedAction(() =>
             {
-                var path = RunAStar();
+                var (map, start, end) = GenerateMap();
+                var path = RunAStar(map, start, end);
 
-                var tMap = input.Select((s, h) => s.Select((c, w) => c).ToArray()).ToArray();
-                foreach(var node in path)
-                {
-                    if(tMap[node.Y][node.X] != 'S' && tMap[node.Y][node.X] != 'E')
-                        tMap[node.Y][node.X] = ' '; 
-                }
+                List<string> output = RenderOutput(path);
 
-                List<string> output = tMap.Select(s => new string(s)).ToList();
-
-                var steps = path.Count;
+                var steps = path.Count - 1;
                 output.Add($"steps = {steps}");
                 StoreAnswerPartOne(answers: output);
             });
@@ -67,11 +38,35 @@ namespace Advent_Of_Code_2022.Days
         {
             RunProtectedAction(() =>
             {
-                //StoreAnswerPartTwo($"");
+                var maps = GenerateMaps();
+
+                var path = maps.Select(map => RunAStar(map.map, map.start, map.end))
+                               .Where(steps => steps.Count > 0)
+                               .Aggregate((a, b) => a.Count <= b.Count ? a : b);
+
+                List<string> output = RenderOutput(path);
+
+                var steps = path.Count - 1;
+                output.Add($"steps = {steps}");
+
+                StoreAnswerPartTwo(answers: output);
             });
         }
 
-        private List<Node> GetNeighbors(int y, int x)
+        private List<string> RenderOutput(List<Node> result)
+        {
+            var tMap = input.Select((s, h) => s.Select((c, w) => c).ToArray()).ToArray();
+            foreach (var node in result)
+            {
+                if (tMap[node.Y][node.X] != 'S' && tMap[node.Y][node.X] != 'E')
+                    tMap[node.Y][node.X] = ' ';
+            }
+
+            List<string> output = tMap.Select(s => new string(s)).ToList();
+            return output;
+        }
+
+        private List<Node> GetNeighbors(int y, int x, Node[][]map)
         {
             List<Node> neighbors = new();
             if (y + 1 < map.Length)
@@ -89,7 +84,7 @@ namespace Advent_Of_Code_2022.Days
             return neighbors;
         }
 
-        private List<Node> RunAStar()
+        private List<Node> RunAStar(Node[][] map, Node start, Node end)
         {
             List<Node> openSet = new();
             List<Node> closedSet = new();
@@ -97,7 +92,7 @@ namespace Advent_Of_Code_2022.Days
             openSet.Add(start);
 
             start.Gscore = 0;
-            start.Fscore = EsitmateDistance(start);
+            start.Fscore = EsitmateDistance(start, end);
 
             while (openSet.Any())
             {
@@ -106,9 +101,9 @@ namespace Advent_Of_Code_2022.Days
                 var currentNode = openSet.First();
 
 
-                if (currentNode == goal)
+                if (currentNode == end)
                 {
-                    return ConstructPath(currentNode);
+                    return ConstructPath(currentNode, start);
                 }
 
                 foreach (var neighbor in currentNode.Neighbors)
@@ -120,17 +115,9 @@ namespace Advent_Of_Code_2022.Days
                     var tentativeGS = currentNode.Gscore + 1;
                     if (tentativeGS < neighbor.Gscore)
                     {
-
-
-                        //if (neighbor.X == 93 && neighbor.Y == 29)
-                        //{
-                        //    ConsoleRenderer.QueueRenderFrame(CreateCurretStatusAsFrame(openSet, closedSet, currentNode));
-                        //    var t = 0;
-                        //}
-
                         neighbor.CameFrom = currentNode;
                         neighbor.Gscore = tentativeGS;
-                        neighbor.Fscore = tentativeGS + EsitmateDistance(neighbor);
+                        neighbor.Fscore = tentativeGS + EsitmateDistance(neighbor, end);
 
                         if (!openSet.Contains(neighbor) || currentNode.Elevation == 83)
                         {
@@ -143,10 +130,51 @@ namespace Advent_Of_Code_2022.Days
 
                 openSet.Remove(currentNode);
                 closedSet.Add(currentNode);
-                ConsoleRenderer.QueueRenderFrame(CreateCurretStatusAsFrame(openSet, closedSet, currentNode));
+                //ConsoleRenderer.QueueRenderFrame(CreateCurretStatusAsFrame(openSet, closedSet, currentNode));
             }
 
             return new();
+        }
+
+        private (Node[][] map, Node start, Node end) GenerateMap()
+        {
+            var map = input.Select((s, h) => s.Select((c, w) => new Node(c == 'E' ? 'z' + 1 : c, w, h)).ToArray()).ToArray();
+            Node start = null;
+            Node end = null;
+
+            for (int h = 0; h < map.Length; h++)
+            {
+                for (int w = 0; w < map[h].Length; w++)
+                {
+                    if (map[h][w].Elevation == 83)
+                        start = map[h][w];
+
+                    if (map[h][w].Elevation == 'z' + 1)
+                        end = map[h][w];
+
+
+                    map[h][w].SetNeighbors(GetNeighbors(h, w, map));
+                }
+            }
+
+            return (map, start, end);
+        }
+
+        private List<(Node[][] map, Node start, Node end)> GenerateMaps()
+        {
+            var startLocations = input.SelectMany((s, h) => s.Select((c, w) => new { c, h, w } ).Where(item => item.c == 'a').ToArray()).ToArray();
+
+            List<(Node[][] map, Node start, Node end)> maps = new();
+
+            foreach (var start in startLocations)
+            {
+                var mapData = GenerateMap();
+                mapData.map[mapData.start.Y][mapData.start.Y].Elevation = 'a';
+                var newStart = mapData.map[start.h][start.w];
+                maps.Add((mapData.map, newStart, mapData.end));
+            }
+
+            return maps;
         }
 
         private Frame CreateCurretStatusAsFrame(List<Node> openSet, List<Node> closedSet, Node current)
@@ -171,12 +199,12 @@ namespace Advent_Of_Code_2022.Days
             return new Frame(content: output, width: output.Max(s => s.Length), heigth: output.Count, filler: ' ', verticalAlign: VerticalAlign.top, contentHorizontalAlign: HorizontalAlign.left);
         }
 
-        private int EsitmateDistance(Node pos)
+        private int EsitmateDistance(Node pos, Node destination)
         {
-            return Math.Abs(pos.X - goal.X) + Math.Abs(pos.Y - goal.Y);
+            return Math.Abs(pos.X - destination.X) + Math.Abs(pos.Y - destination.Y);
         }
 
-        private List<Node> ConstructPath(Node current)
+        private List<Node> ConstructPath(Node current, Node start)
         {
             List<Node> path = new();
             path.Add(current);

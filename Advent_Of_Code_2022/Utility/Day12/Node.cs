@@ -15,7 +15,7 @@ namespace Advent_Of_Code_2022.Utility.Day12
         public int X { get; private set; }
         public int Y { get; private set; }
         public List<Node> Neighbors { get; private set; }
-        public int Elevation { get; private set; }
+        public int Elevation { get; set; }
 
         public Node(int elevation, int x, int y)
         {
@@ -28,7 +28,5 @@ namespace Advent_Of_Code_2022.Utility.Day12
         {
             Neighbors = neighbors;
         }
-
-
     }
 }

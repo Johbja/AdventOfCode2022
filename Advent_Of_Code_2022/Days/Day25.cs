@@ -21,6 +21,38 @@ namespace Advent_Of_Code_2022.Days
         {
             RunProtectedAction(() =>
             {
+                
+                int sum = 0;
+                foreach (string s in SNAFUNumbers)
+                {
+                    int number = 0;
+                    int placeValue = 1;
+                    for (int i = s.Length - 1; i >= 0; i--)
+                    {
+                        switch (s[i])
+                        {
+                            case '1':
+                                number += placeValue;
+                                break;
+                            case '2':
+                                number += 2 * placeValue;
+                                break;
+                            case '=':
+                                number -= 2 * placeValue;
+                                break;
+                            case '-':
+                                number -= placeValue;
+                                break;
+                            default:
+                                break;
+                        }
+                        placeValue *= 5;
+                    }
+                    sum += number;
+                }
+                StoreAnswerPartOne("Sum of fuel requirements: " + sum);
+
+
                 var output = SNAFUNumbers.Select(x => ParseFromSNAFU(x));//Aggregate(0L, (a, b) => a + ParseFromSNAFU(b));
 
 

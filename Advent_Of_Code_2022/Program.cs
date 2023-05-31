@@ -27,7 +27,7 @@ Parser.Default.ParseArguments<CommandLineOptions>(args).WithParsed(o =>
             return;
         }
 
-        var dayInfo = (DayInfo)Attribute.GetCustomAttribute(day, typeof(DayInfo));
+        DayInfo? dayInfo = Attribute.GetCustomAttribute(day, typeof(DayInfo)) as DayInfo;
 
         if(dayInfo is not null)
         {
@@ -45,6 +45,4 @@ Parser.Default.ParseArguments<CommandLineOptions>(args).WithParsed(o =>
 });
 
 if(ConsoleRenderer.IsRendering(out Task? renderTask))
-{
     await renderTask;
-}

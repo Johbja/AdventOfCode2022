@@ -1,103 +1,102 @@
 ﻿using Advent_Of_Code_2022.CustomAttributes;
 
-namespace Advent_Of_Code_2022.Days
+namespace Advent_Of_Code_2022.Days;
+
+[DayInfo("8", "Treetop Tree House")]
+public class Day08 : Solution
 {
-    [DayInfo("8", "Treetop Tree House")]
-    public class Day08 : Solution
+    private readonly int[][] heightMap;
+    private readonly int maxScore;
+    private readonly int visibleTrees;
+
+    public Day08(string path, Type instanceType, bool render) : base(path, instanceType, render)
     {
-        private readonly int[][] heightMap;
-        private readonly int maxScore;
-        private readonly int visibleTrees;
+        heightMap = input.Select(s => s.Select(c => int.Parse(c.ToString())).ToArray()).ToArray();
 
-        public Day08(string path, Type instanceType, bool render) : base(path, instanceType, render)
+        var outerDiameter = heightMap.Length * 2 + heightMap[0].Length * 2 - 4;
+        maxScore = 0;
+        visibleTrees = outerDiameter;
+
+        for (int y = 1; y < heightMap.Length - 1; y++)
         {
-            heightMap = input.Select(s => s.Select(c => int.Parse(c.ToString())).ToArray()).ToArray();
-
-            var outerDiameter = heightMap.Length * 2 + heightMap[0].Length * 2 - 4;
-            maxScore = 0;
-            visibleTrees = outerDiameter;
-
-            for (int y = 1; y < heightMap.Length - 1; y++)
+            for (int x = 1; x < heightMap[y].Length - 1; x++)
             {
-                for (int x = 1; x < heightMap[y].Length - 1; x++)
-                {
-                    var (visible, score) = CheckTree(y, x);
+                var (visible, score) = CheckTree(y, x);
 
-                    visibleTrees += visible;
-                    
-                    if (score > maxScore)
-                        maxScore = score;
-                }
+                visibleTrees += visible;
+                
+                if (score > maxScore)
+                    maxScore = score;
+            }
+        }
+    }
+
+    protected override void SolvePartOne()
+    {
+        RunProtectedAction(() =>
+        {
+            StoreAnswerPartOne($"There are {visibleTrees} visible trees");
+        });
+    }
+
+    protected override void SolvePartTwo()
+    {
+        RunProtectedAction(() =>
+        {
+            StoreAnswerPartTwo($"The tree with most scenic score is {maxScore}");
+        });
+    }
+
+    private (int visible, int score) CheckTree(int y, int x)
+    {
+        var checkValue = heightMap[y][x];
+        bool[] visibleDirecections = new bool[] { true, true, true, true };
+        int[] treesInDirection = new int[] { 0, 0, 0, 0 };
+
+        for(int vertical = y - 1; vertical >= 0; vertical--)
+        {
+            treesInDirection[0]++;
+
+            if(checkValue <= heightMap[vertical][x])
+            {
+                visibleDirecections[0] = false;
+                break;
             }
         }
 
-        protected override void SolvePartOne()
+        for (int vertical = y + 1; vertical < heightMap.Length; vertical++)
         {
-            RunProtectedAction(() =>
+            treesInDirection[1]++;
+
+            if (checkValue <= heightMap[vertical][x])
             {
-                StoreAnswerPartOne($"There are {visibleTrees} visible trees");
-            });
+                visibleDirecections[1] = false;
+                break;
+            }
         }
 
-        protected override void SolvePartTwo()
+        for (int horizontal = x - 1; horizontal >= 0; horizontal--)
         {
-            RunProtectedAction(() =>
+            treesInDirection[2]++;
+
+            if (checkValue <= heightMap[y][horizontal])
             {
-                StoreAnswerPartTwo($"The tree with most scenic score is {maxScore}");
-            });
+                visibleDirecections[2] = false;
+                break;
+            }
         }
 
-        private (int visible, int score) CheckTree(int y, int x)
+        for (int horizontal = x + 1; horizontal < heightMap[y].Length; horizontal++)
         {
-            var checkValue = heightMap[y][x];
-            bool[] visibleDirecections = new bool[] { true, true, true, true };
-            int[] treesInDirection = new int[] { 0, 0, 0, 0 };
+            treesInDirection[3]++;
 
-            for(int vertical = y - 1; vertical >= 0; vertical--)
+            if (checkValue <= heightMap[y][horizontal])
             {
-                treesInDirection[0]++;
-
-                if(checkValue <= heightMap[vertical][x])
-                {
-                    visibleDirecections[0] = false;
-                    break;
-                }
+                visibleDirecections[3] = false;
+                break;
             }
-
-            for (int vertical = y + 1; vertical < heightMap.Length; vertical++)
-            {
-                treesInDirection[1]++;
-
-                if (checkValue <= heightMap[vertical][x])
-                {
-                    visibleDirecections[1] = false;
-                    break;
-                }
-            }
-
-            for (int horizontal = x - 1; horizontal >= 0; horizontal--)
-            {
-                treesInDirection[2]++;
-
-                if (checkValue <= heightMap[y][horizontal])
-                {
-                    visibleDirecections[2] = false;
-                    break;
-                }
-            }
-
-            for (int horizontal = x + 1; horizontal < heightMap[y].Length; horizontal++)
-            {
-                treesInDirection[3]++;
-
-                if (checkValue <= heightMap[y][horizontal])
-                {
-                    visibleDirecections[3] = false;
-                    break;
-                }
-            }
-
-            return (visibleDirecections.Any(x => x == true) ? 1 : 0, treesInDirection.Aggregate((a,b) => a * b));
         }
+
+        return (visibleDirecections.Any(x => x == true) ? 1 : 0, treesInDirection.Aggregate((a,b) => a * b));
     }
 }

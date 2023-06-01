@@ -1,120 +1,114 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 
-namespace Advent_Of_Code_2022.Days
+namespace Advent_Of_Code_2022.Days;
+
+public class Solution
 {
-    public class Solution
+    private List<string> output;
+    protected List<string> input;
+    protected string path;
+    protected bool render;
+
+    public Solution(string path, Type instanceType, bool render) 
     {
-        private List<string> output;
-        protected List<string> input;
-        protected string path;
-        protected bool render;
+        this.path = path;
+        this.render = render;
+        output = new();
+        ReadInput(instanceType.Name, path);
+    }
 
-        public Solution(string path, Type instanceType, bool render) 
+    protected virtual void SolvePartOne() {}
+
+    protected virtual void SolvePartTwo() {}
+
+    public void Solve(int option)
+    {
+        switch (option)
         {
-            this.path = path;
-            this.render = render;
-            output = new();
-            ReadInput(instanceType.Name, path);
+            case 1:
+                SolvePartOne();
+                break;
+            case 2:
+                SolvePartTwo();
+                break;
+            default:
+                SolvePartOne();
+                SolvePartTwo();
+                break;
         }
 
-        protected virtual void SolvePartOne() {}
+        ShowOutput();
+    }
 
-        protected virtual void SolvePartTwo() {}
+    private void ShowOutput()
+    {
+        if (render)
+            Renderer.ConsoleRenderer.QueueRenderFrame(new Renderer.Frame(content: output, width: output.Max(x => x.Length), heigth: output.Count, filler: ' '));
+        else
+            PrintOutput();
+    }
 
-        public void Solve(int option)
+    private void PrintOutput()
+    {
+        foreach(var line in output)
         {
-            switch (option)
-            {
-                case 1:
-                    SolvePartOne();
-                    break;
-                case 2:
-                    SolvePartTwo();
-                    break;
-                default:
-                    SolvePartOne();
-                    SolvePartTwo();
-                    break;
-            }
+            Console.WriteLine(line);
+        }
+    }
 
-            ShowOutput();
+    protected void StoreAnswerPartOne(string answer = null, List<string> answers = null)
+    {
+        output.Add("--Answer Part One--");
+        
+        if(answers == null)
+        {
+            output.Add(answer);
+            return;
         }
 
-        private void ShowOutput()
+        output.AddRange(answers);
+    }
+
+    protected void StoreAnswerPartTwo(string answer = null, List<string> answers = null) 
+    {
+        output.Add("--Answer Part Two--");
+        
+        if (answers == null)
         {
-            if (render)
-                Renderer.ConsoleRenderer.QueueRenderFrame(new Renderer.Frame(content: output, width: output.Max(x => x.Length), heigth: output.Count, filler: ' '));
-            else
-                PrintOutput();
+            output.Add(answer);
+            return;
         }
 
-        private void PrintOutput()
+        output.AddRange(answers);
+    }
+
+    protected void RunProtectedAction(Action action)
+    {
+        try
         {
-            foreach(var line in output)
-            {
-                Console.WriteLine(line);
-            }
+            TimeAction(action);
         }
-
-        protected void StoreAnswerPartOne(string answer = null, List<string> answers = null)
+        catch(Exception ex)
         {
-            output.Add("--Answer Part One--");
-            
-            if(answers == null)
-            {
-                output.Add(answer);
-                return;
-            }
-
-            output.AddRange(answers);
+            output.Add($"Error occured in {action.Method.Name}, {ex.Message}");
         }
+    }
 
-        protected void StoreAnswerPartTwo(string answer = null, List<string> answers = null) 
-        {
-            output.Add("--Answer Part Two--");
-            
-            if (answers == null)
-            {
-                output.Add(answer);
-                return;
-            }
+    protected void TimeAction(Action action)
+    {
+        var timer = new Stopwatch();
+        timer.Start();
+        action();
+        timer.Stop();
+        output.Add($"Action exacuted in {timer.Elapsed.TotalSeconds} seconds");
+    }
 
-            output.AddRange(answers);
-        }
+    protected void ReadInput(string filename, string path = "")
+    {
+        string fullpath = path;
+        if (string.IsNullOrEmpty(path))
+            fullpath = Path.Combine(AppContext.BaseDirectory, $"Inputs\\{filename}.txt"); 
 
-        protected void RunProtectedAction(Action action)
-        {
-            try
-            {
-                TimeAction(action);
-            }
-            catch(Exception ex)
-            {
-                output.Add($"Error occured in {action.Method.Name}, {ex.Message}");
-            }
-        }
-
-        protected void TimeAction(Action action)
-        {
-            var timer = new Stopwatch();
-            timer.Start();
-            action();
-            timer.Stop();
-            output.Add($"Action exacuted in {timer.Elapsed.TotalSeconds} seconds");
-        }
-
-        protected void ReadInput(string filename, string path = "")
-        {
-            string fullpath = path;
-            if (string.IsNullOrEmpty(path))
-                fullpath = Path.Combine(AppContext.BaseDirectory, $"Inputs\\{filename}.txt"); 
-
-            input = File.ReadAllLines(fullpath).ToList();
-        }
+        input = File.ReadAllLines(fullpath).ToList();
     }
 }

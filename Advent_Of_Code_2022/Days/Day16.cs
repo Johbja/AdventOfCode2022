@@ -1,20 +1,25 @@
-﻿namespace Advent_Of_Code_2022.Days;
+﻿using Advent_Of_Code_2022.CustomAttributes;
+using System.Runtime.CompilerServices;
+using System.Security.Cryptography.X509Certificates;
 
+namespace Advent_Of_Code_2022.Days;
+
+[DayInfo("16", "Proboscidea Volcanium")]
 public class Day16 : Solution
 {
-    Dictionary<string, (int flowrate, List<string> connections)> graph;
+    private List<Valve> valves;
+    private string _lastValve;
 
     public Day16(string path, Type instanceType, bool render) : base(path, instanceType, render)
     {
-        graph = input.Select(row => row.Split(";").ToArray()).Select(data => new
-        {
-            key = data[0].Split("=").First().Split(" ")[1], 
-            values = new 
-            { 
-                flowrate = int.Parse(data[0].Split("=").Last()), 
-                connections = data[1].Replace(",", "").Split(" ").Skip(5).ToList()
-            } 
-        }).ToDictionary(key => key.key, values => (values.values.flowrate, values.values.connections));
+        valves = input.Select(row => row.Split(";").ToArray())
+            .Select(split => new { valve = split[0].Split(" "), conncetions = split[1].Replace(",", "").Split(" ").Skip(4).ToList() })
+            .Select(parsedRow => new Valve(parsedRow.valve[1], int.Parse(parsedRow.valve.Last().Replace(";", "").Split("=")[1]), parsedRow.conncetions))
+            .ToList();
+
+        _lastValve = valves.Last().Name;
+
+        valves.ForEach(valve => valve.ConnectValues(valves));
 
     }
 
@@ -22,9 +27,9 @@ public class Day16 : Solution
     {
         RunProtectedAction(() =>
         {
+            var flowRate = FindMaxFlowRate(valves[0]);
 
-
-            StoreAnswerPartOne($"");
+            StoreAnswerPartOne($"max flow rate = {flowRate}");
         });
     }
 
@@ -38,35 +43,151 @@ public class Day16 : Solution
         });
     }
 
-    private int CalculateBestPath()
+    private int FindMaxFlowRate(Valve start)
     {
-        int flowRate = 0;
-        int steps = 30;
-        string startKey = "AA";
-        List<string> closedSet = new List<string>() { startKey };
-        Stack<(int steps, int flowRate, List<string> closedSet)> stateStack = new();
-        
-        var startData = graph[startKey];
-        foreach(var connection in startData.connections)
+        List<TunnleNode> nodes = new();
+
+        foreach(var valve in start.AdjacentValves)
         {
-            //if()
+            var newNode = new TunnleNode(valve);
+            nodes.Add(newNode);
         }
 
+        for(int minutes = 29; minutes > 0; minutes--)
+        {
+            foreach(var node in nodes)
+            {
+                node.ExplorePaths();
+            }
+        }
 
-        return flowRate;
+        return nodes.Max(x => x.Search());
     }
 
-    private int ExplorePath(string key, List<string> closedSet)
+    private int FindMaximumFlowRate(Valve start, int totalActions)
     {
-        foreach(var connection in graph[key].connections)
+        Dictionary<Valve, (int, List<(string, int)>)> maximumFlowRate = new();
+        PriorityQueue<(int, Valve, int, int, List<string>, List<(string, int)>), int> priorityQueue = new();
+        priorityQueue.Enqueue((0, start, 0, totalActions, new(), new() {(start.Name, 0)}), 0);
+
+        while (priorityQueue.Count > 0)
         {
-            if (closedSet.Contains(connection))
-                continue;
+            (
+                int flowRate, 
+                Valve currentValve, 
+                int actionsUsed, 
+                int actionsRemaining, 
+                List<string> openValves, 
+                List<(string, int)> path
+            ) = priorityQueue.Dequeue();
 
+            foreach(var adjacentValve in currentValve.AdjacentValves)
+            {
+                int newActionsUsed = actionsUsed + 1;
+                int newFlowRate = flowRate;
 
+                if (!openValves.Contains(currentValve.Name))
+                {
+                    newFlowRate += (adjacentValve.FlowRate * actionsRemaining);
+                    newActionsUsed++;
+                    openValves.Add(adjacentValve.Name);
+                }
+
+                int newActionsRemaining = actionsRemaining - newActionsUsed;
+
+                
+
+                if (newActionsRemaining <= 0)
+                {
+                    if (!maximumFlowRate.ContainsKey(currentValve))
+                        maximumFlowRate.Add(currentValve, (newFlowRate, path));
+                    else if (maximumFlowRate[currentValve].Item1 < newFlowRate)
+                        maximumFlowRate[currentValve] = (newFlowRate, path);
+
+                    continue;
+                }
+
+                path.Add((adjacentValve.Name, newFlowRate));
+                priorityQueue.Enqueue((newFlowRate, adjacentValve, newActionsUsed, newActionsRemaining, openValves, path), -newFlowRate);
+            }
         }
 
-        return 0;
+        return maximumFlowRate.Max(x => x.Value.Item1);
+    }
+}
+
+public class Valve
+{
+    public string Name { get; set; }
+    public int FlowRate { get; set; }
+    public List<Valve> AdjacentValves { get; set; } = new();
+
+    private List<string> navigationConnections = new();
+
+    public Valve(string name, int flowRate, List<string> connections)
+    {
+        Name = name;
+        FlowRate = flowRate;
+        navigationConnections = connections;
+    }
+
+    public void ConnectValues(List<Valve> valves)
+    {
+        AdjacentValves = valves.Where(valve => navigationConnections.Contains(valve.Name)).ToList();
+    }
+}
+
+public class TunnleNode
+{
+    List<TunnleNode> nodes = new();
+    public Valve Valve { get; set; }
+    public int FlowRateAccumilated = 0;
+    public bool Open = false;
+    public bool Explored = false;
+    
+    public TunnleNode(Valve valve)
+    {
+        Valve = valve;
+    }
+
+    public void UpdateNode()
+    {
+
+    }
+
+    public void ExplorePaths()
+    {
+        if(!Open && Valve.FlowRate > 0)
+        {
+            Open = true;
+        }
+        else
+        {
+            foreach(var valve in Valve.AdjacentValves)
+            {
+                nodes.Add(new TunnleNode(valve));
+            }
+        }
+            
+        if (Open)
+            FlowRateAccumilated += Valve.FlowRate;
+
+        if (Explored)
+        {
+            foreach(var node in nodes)
+            {
+                node.ExplorePaths();
+            }
+        }
+        else
+        {
+            Explored = true;
+        }
+    }
+
+    public int Search()
+    {
+        return nodes?.Count > 0 ? FlowRateAccumilated + nodes.Max(x => x.Search()) : 0;
     }
 
 }

@@ -1,4 +1,6 @@
-﻿namespace Advent_Of_Code_2022.Days;
+﻿using System.Collections;
+
+namespace Advent_Of_Code_2022.Days;
 
 public class Day17 : Solution
 {
@@ -12,93 +14,97 @@ public class Day17 : Solution
         //1 0001000
         //1 0011100
         //1 0001000
+        //0000000000
+        //0000000000
+        //-------------------------        
+        //1 0000000 0000100 0000100
+        //1 0011100 0000100 0000.00
+        //1 0000100 0000.00 0000.00
+        //0000001000
+        //0000000000
+        //  -----------------------              
 
-        //1 0011100
-        //1 0000100
-        //1 0000100
-
         //1 0010000
         //1 0010000
         //1 0010000
         //1 0010000
+        //----------------
 
         //1 0011000
         //1 0011000
-
-        List<Rock> rocks1 = new();
-        rocks1.Add(new Rock(new List<Func<int, int>[]>()
-        {
-            new Func<int, int>[4]
-            {
-                x => x - 1,
-                x => x,
-                x => x + 1,
-                x => x + 2
-            }
-        }));
-        rocks1.Add(new Rock(new List<Func<int, int>[]>()
-        {
-            new Func<int, int>[1]
-            {
-                x => x
-            },
-            new Func<int, int>[3]
-            {
-                x => x - 1,
-                x => x,
-                x => x +1
-            },
-            new Func<int, int>[1]
-            {
-                x => x
-            },
-        }));
-        rocks1.Add(new Rock(new List<Func<int, int>[]>()
-        {
-            new Func<int, int>[3]
-            {
-                x => x - 1,
-                x => x,
-                x => x +1
-            },
-            new Func<int, int>[1]
-            {
-                x => x +1
-            },
-            new Func<int, int>[1]
-            {
-                x => x + 1
-            },
-        }));
-
-        rocks = new();
-        rocks.Add(new byte[1] { 30 });
-        rocks.Add(new byte[3]
-        {
-            8,
-            28,
-            8
-        });
-        rocks.Add(new byte[3]
-        {
-            28,
-            4,
-            4
-        });
-        rocks.Add(new byte[4]
-        {
-            16,
-            16,
-            16,
-            16
-        });
-        rocks.Add(new byte[2]
-        {
-            24,
-            24
-        });
 
         jetPattern = input.SelectMany(s => s.Select(c => c).ToArray()).ToArray();
+
+    }
+
+    public enum RockShape
+    {
+        Line = 0,
+        Cross,
+        Shelf,
+        Edge,
+        Square
+    }
+
+    public class FallingRock
+    {
+        public RockShape Shape { get; private set; }
+        public (int x, int y) CurrentPosition { get; set; }
+        public (int x, int y)[] RockPositionFormation { get; private set; }
+
+        public FallingRock((int x, int y) currentPosition, RockShape shape = RockShape.Line)
+        {
+            CurrentPosition = currentPosition;
+            Shape = shape;
+
+            switch (shape)
+            {
+                case RockShape.Line:
+                    RockPositionFormation = new (int x, int y)[4] { (0, 0), (1, 0), (2, 0), (3, 0), };
+                    break;
+                case RockShape.Cross:
+                    RockPositionFormation = new (int x, int y)[5] { (0, 0), (1, 0), (1, -1), (1, 1), (2, 0) };
+                    CurrentPosition = (CurrentPosition.x, CurrentPosition.y + 1);
+                    break;
+                case RockShape.Shelf:
+                    RockPositionFormation = new (int x, int y)[5] { (0, 0), (1, 0), (2, 0), (2, -1), (2, -2) };
+                    CurrentPosition = (CurrentPosition.x, CurrentPosition.y + 2);
+                    break;
+                case RockShape.Edge:
+                    RockPositionFormation = new (int x, int y)[4] { (0, 0), (0, -1), (0, -2), (0, -3) };
+                    CurrentPosition = (CurrentPosition.x, CurrentPosition.y + 3);
+                    break;
+                case RockShape.Square:
+                    RockPositionFormation = new (int x, int y)[4] { (0, 0), (0, 1), (-1, 0), (1, -1) };
+                    CurrentPosition = (CurrentPosition.x, CurrentPosition.y + 1);
+                    break;
+            }
+        }
+
+        public int GetHighestPosition()
+        {
+            return GetPositions().Max(pos => pos.y);
+        }
+
+        public int GetLowestPosition()
+        {
+            return GetPositions().Min(pos => pos.y);
+        }
+
+        public int GetLowestXPosition()
+        {
+            return GetPositions().Min(pos => pos.x);
+        }
+
+        public int GetHighestXPosition()
+        {
+            return GetPositions().Max(pos => pos.x);
+        }
+
+        public IEnumerable<(int x, int y)> GetPositions()
+        {
+            return RockPositionFormation.Select(pos => (x: CurrentPosition.x + pos.x, y: CurrentPosition.y + pos.y));
+        }
 
     }
 
@@ -106,51 +112,74 @@ public class Day17 : Solution
     {
         RunProtectedAction(() =>
         {
-            List<byte> Shaft = new List<byte>() { 255, 0, 0, 0 };
+            List<FallingRock> rocks = new();
+            RockShape currentShape = RockShape.Line;
+            (int x, int y) currentPos = (3,4);
+            int instructionPointer = 0;
 
-            for (int i = 0; i < 2023; i++)
+            for(int i = 0; i < 2023; i++)
             {
-                var currentRock = rocks[i % rocks.Count];
-                Shaft = PlaceNewRock(Shaft, currentRock);
-                int currentYPos = Shaft.Count - currentRock.Length;
-                int rockLength = currentRock.Length - 1;
+                var currentRock = new FallingRock(currentPos, currentShape);
+                var collitionPositions = rocks.SelectMany(x => x.GetPositions());
+                (int x, int y) positionBeforeMove = (0,0);
+                bool fall = false;
 
-                bool moveRock = true;
-                int instructionCounter = 0;
-                while (moveRock)
+                while (positionBeforeMove != currentRock.CurrentPosition)
                 {
-                    var currentJet = jetPattern[instructionCounter % jetPattern.Length];
+                    positionBeforeMove = currentRock.CurrentPosition;
 
-                    Func<byte, byte> bitShiftOperation = currentJet == '>' ? x => (byte)(x >> 1) : x => (byte)(x << 1);
+                    var currentPositions = currentRock.GetPositions();
+                    
+                    var leftMovement = currentRock.GetLowestXPosition() - 1;
+                    var allLeftMovement = currentPositions.Select(pos => (pos.x - 1, pos.y));
+                    
+                    var rigthMovement = currentRock.GetHighestXPosition() + 1;
+                    var allRightMovement = currentPositions.Select(pos => (pos.x + 1, pos.y));
+                    
+                    var downMovement =  currentRock.GetLowestPosition() - 1;
+                    var allDownMovement = currentPositions.Select(pos => (pos.x, pos.y - 1));
 
-                    if (CheckIfRowCanShift(Shaft, currentYPos, rockLength, right: currentJet == '>'))
+                    if (!fall)
                     {
-                        for (int y = currentYPos; y <= currentYPos + rockLength; y++)
-                        {
-                            Shaft[y] = bitShiftOperation(Shaft[y]);
-                        }
-                    }
+                        if (jetPattern[instructionPointer] == '>' && rigthMovement <= 7 && collitionPositions.All(cp => !allRightMovement.Contains(cp)))
+                            currentRock.CurrentPosition = (currentRock.CurrentPosition.x + 1, currentRock.CurrentPosition.y);
+                        else if (jetPattern[instructionPointer] == '<' && leftMovement > 0 && collitionPositions.All(cp => !allLeftMovement.Contains(cp)))
+                            currentRock.CurrentPosition = (currentRock.CurrentPosition.x - 1, currentRock.CurrentPosition.y);
 
-                    if ((Shaft[currentYPos - 1] & Shaft[currentYPos]) != 0)
+                        instructionPointer = (instructionPointer + 1) % jetPattern.Length;
+                        fall = true;
+                    }
+                    else
                     {
-                        moveRock = false;
-                        continue;
-                    }
+                        if (downMovement >= 0 && collitionPositions.All(cp => !allDownMovement.Contains(cp)))
+                            currentRock.CurrentPosition = (currentRock.CurrentPosition.x, currentRock.CurrentPosition.y - 1);
 
-                    for (int y = currentYPos; y <= currentYPos + rockLength; y++)
-                    {
-                        Shaft[y - 1] = (byte)(Shaft[y] | Shaft[y - 1]);
-                        Shaft[y] = 0;
+                        fall = false;
                     }
-
-                    currentYPos--;
-                    instructionCounter++;
                 }
 
+                rocks.Add(currentRock);
+                currentShape = (RockShape)(((int)currentShape + 1) % 5);
+                currentPos = (currentPos.x, currentRock.GetHighestPosition() + 5);
             }
 
-
-            StoreAnswerPartOne($"");
+            var allPositions = rocks.SelectMany(x => x.GetPositions());
+            int lastY = rocks.Max(x => x.GetHighestPosition());
+            int xTest = allPositions.Max(x => x.x);
+            List<string> outputrows = Enumerable.Range(0, lastY+1).Select(x => "|.......|").ToList();
+            var lent = outputrows.Max(x => x.Length);
+            foreach (var position in allPositions)
+            {
+                if(outputrows.Count > position.y)
+                {
+                    string currentRow = outputrows[position.y];
+                    var currentArrayRow = currentRow.ToArray();
+                    currentArrayRow[position.x] = '#';
+                    outputrows[position.y] = new string(currentArrayRow);
+                }
+            }
+            outputrows.Reverse();
+            StoreAnswerPartOne(answers:outputrows);
         });
     }
 

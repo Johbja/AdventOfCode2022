@@ -67,16 +67,13 @@ public class Day17 : Solution
                     CurrentPosition = (CurrentPosition.x, CurrentPosition.y + 1);
                     break;
                 case RockShape.Shelf:
-                    RockPositionFormation = new (int x, int y)[5] { (0, 0), (1, 0), (2, 0), (2, -1), (2, -2) };
-                    CurrentPosition = (CurrentPosition.x, CurrentPosition.y + 2);
+                    RockPositionFormation = new (int x, int y)[5] { (0, 0), (1, 0), (2, 0), (2, 1), (2, 2) };
                     break;
                 case RockShape.Edge:
-                    RockPositionFormation = new (int x, int y)[4] { (0, 0), (0, -1), (0, -2), (0, -3) };
-                    CurrentPosition = (CurrentPosition.x, CurrentPosition.y + 3);
+                    RockPositionFormation = new (int x, int y)[4] { (0, 0), (0, 1), (0, 2), (0, 3) };
                     break;
                 case RockShape.Square:
-                    RockPositionFormation = new (int x, int y)[4] { (0, 0), (0, 1), (-1, 0), (1, -1) };
-                    CurrentPosition = (CurrentPosition.x, CurrentPosition.y + 1);
+                    RockPositionFormation = new (int x, int y)[4] { (0, 0), (0, 1), (1, 0), (1, 1) };
                     break;
             }
         }
@@ -112,65 +109,59 @@ public class Day17 : Solution
     {
         RunProtectedAction(() =>
         {
-            List<FallingRock> rocks = new();
-            RockShape currentShape = RockShape.Line;
-            (int x, int y) currentPos = (3,4);
             int instructionPointer = 0;
+            RockShape currentShape = RockShape.Line;
+            (int x, int y) currentPos = (2, 4);
 
-            for(int i = 0; i < 2023; i++)
+            List<FallingRock> rocks = new();
+            for (int i = 0; i < 13; i++)
             {
                 var currentRock = new FallingRock(currentPos, currentShape);
                 var collitionPositions = rocks.SelectMany(x => x.GetPositions());
-                (int x, int y) positionBeforeMove = (0,0);
-                bool fall = false;
+                (int x, int y) positionBeforeMove = (0, 0);
+                bool falling = true;
 
-                while (positionBeforeMove != currentRock.CurrentPosition)
+                while (falling)
                 {
                     positionBeforeMove = currentRock.CurrentPosition;
 
                     var currentPositions = currentRock.GetPositions();
-                    
+
                     var leftMovement = currentRock.GetLowestXPosition() - 1;
                     var allLeftMovement = currentPositions.Select(pos => (pos.x - 1, pos.y));
-                    
+
                     var rigthMovement = currentRock.GetHighestXPosition() + 1;
                     var allRightMovement = currentPositions.Select(pos => (pos.x + 1, pos.y));
-                    
-                    var downMovement =  currentRock.GetLowestPosition() - 1;
+
+                    if (jetPattern[instructionPointer] == '>' && rigthMovement <= 7 && collitionPositions.All(cp => !allRightMovement.Contains(cp)))
+                        currentRock.CurrentPosition = (currentRock.CurrentPosition.x + 1, currentRock.CurrentPosition.y);
+                    else if (jetPattern[instructionPointer] == '<' && leftMovement > 0 && collitionPositions.All(cp => !allLeftMovement.Contains(cp)))
+                        currentRock.CurrentPosition = (currentRock.CurrentPosition.x - 1, currentRock.CurrentPosition.y);
+
+                    instructionPointer = (instructionPointer + 1) % jetPattern.Length;
+
+                    var downMovement = currentRock.GetLowestPosition() - 1;
                     var allDownMovement = currentPositions.Select(pos => (pos.x, pos.y - 1));
 
-                    if (!fall)
-                    {
-                        if (jetPattern[instructionPointer] == '>' && rigthMovement <= 7 && collitionPositions.All(cp => !allRightMovement.Contains(cp)))
-                            currentRock.CurrentPosition = (currentRock.CurrentPosition.x + 1, currentRock.CurrentPosition.y);
-                        else if (jetPattern[instructionPointer] == '<' && leftMovement > 0 && collitionPositions.All(cp => !allLeftMovement.Contains(cp)))
-                            currentRock.CurrentPosition = (currentRock.CurrentPosition.x - 1, currentRock.CurrentPosition.y);
-
-                        instructionPointer = (instructionPointer + 1) % jetPattern.Length;
-                        fall = true;
-                    }
+                    if (downMovement > 0 && collitionPositions.All(cp => !allDownMovement.Contains(cp)))
+                        currentRock.CurrentPosition = (currentRock.CurrentPosition.x, currentRock.CurrentPosition.y - 1);
                     else
-                    {
-                        if (downMovement >= 0 && collitionPositions.All(cp => !allDownMovement.Contains(cp)))
-                            currentRock.CurrentPosition = (currentRock.CurrentPosition.x, currentRock.CurrentPosition.y - 1);
-
-                        fall = false;
-                    }
+                        falling = false;
                 }
 
                 rocks.Add(currentRock);
                 currentShape = (RockShape)(((int)currentShape + 1) % 5);
-                currentPos = (currentPos.x, currentRock.GetHighestPosition() + 5);
+                currentPos = (currentPos.x, currentRock.GetHighestPosition() + 4);
             }
 
             var allPositions = rocks.SelectMany(x => x.GetPositions());
             int lastY = rocks.Max(x => x.GetHighestPosition());
             int xTest = allPositions.Max(x => x.x);
-            List<string> outputrows = Enumerable.Range(0, lastY+1).Select(x => "|.......|").ToList();
+            List<string> outputrows = Enumerable.Range(0, lastY + 1).Select(x => "|.......|").ToList();
             var lent = outputrows.Max(x => x.Length);
             foreach (var position in allPositions)
             {
-                if(outputrows.Count > position.y)
+                if (outputrows.Count > position.y)
                 {
                     string currentRow = outputrows[position.y];
                     var currentArrayRow = currentRow.ToArray();
@@ -179,7 +170,7 @@ public class Day17 : Solution
                 }
             }
             outputrows.Reverse();
-            StoreAnswerPartOne(answers:outputrows);
+            StoreAnswerPartOne(answers: outputrows);
         });
     }
 
